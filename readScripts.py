@@ -138,9 +138,9 @@ def readOverdueShares():
     closeConnection(conn)
 
 
-# AGGREGATION PIPELINE
+# AGGREGATION PIPELINES
 
-# Get total dividends history of a client & total per issuer. Sorted from 
+# Get total dividends history of a client & total per issuer. Sorted from most to least.
 def aggregateTotalDividends():
     conn = openConnection()
 
@@ -179,6 +179,45 @@ def aggregateTotalDividends():
     results = collection.aggregate(pipeline)
 
 
+# Get total dividends history of a client & total per issuer. Sorted from least to most.
+def aggregateTotalDividends():
+    conn = openConnection()
+
+    db = conn['Bank112']
+    collection = db['transaction']
+
+    pipeline = [
+        {
+            '$match': {
+                'dividend': True,
+                'account_to': "0-20170209"
+            }
+        }, {
+            '$group': {
+                '_id': '$share_id', 
+                'issuer': '$account_from',
+                'total': {
+                    '$sum': '$amount'
+                }
+            }
+        }, {
+            '$sort': {
+                'total': 1
+            }
+        }, {
+            '$project': {
+                '_id': 0,
+                'issuer': 1,
+                'total': 1
+            }
+        }, {
+            '$out': 'totalDividends'
+        }
+    ]
+
+    results = collection.aggregate(pipeline)
+
+
 # Get shares owned by a customer. Sort by most to least shares.
 def aggregateSharesByCustomer():
     conn = openConnection()
@@ -201,6 +240,42 @@ def aggregateSharesByCustomer():
         }, {
             '$sort': {
                 'total': -1
+            }
+        }, {
+            '$project': {
+                '_id': 1,
+                'total': 1
+            }
+        }, {
+            '$out': 'sortedSharesofAcc'
+        }
+    ]
+
+    results = collection.aggregate(pipeline)
+
+
+# Get shares owned by a customer. Sort by least to most shares.
+def aggregateSharesByCustomer():
+    conn = openConnection()
+
+    db = conn['Bank112']
+    collection = db['shares']
+
+    pipeline = [
+        {
+            '$match': {
+                'account_id': "0-20170209"
+            }
+        }, {
+            '$group': {
+                '_id': '$issuer_id', 
+                'total': {
+                    '$sum': '$total_owned'
+                }
+            }
+        }, {
+            '$sort': {
+                'total': 1
             }
         }, {
             '$project': {
