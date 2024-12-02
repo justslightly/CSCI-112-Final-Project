@@ -1,8 +1,9 @@
-# READ
 from utils import *
 
+# READ
+
 # Retrieve customers
-def getCustomers():
+def readCustomers():
     conn = openConnection()
     
     db = conn['Bank112']
@@ -16,8 +17,8 @@ def getCustomers():
     closeConnection(conn)
 
 
-# Get all dividend-earning accounts  (client Accounts)
-def getAllClientAccs():
+# Get all dividend-earning accounts (client accounts)
+def readAllClientAccs():
     conn = openConnection()
     
     db = conn['Bank112']
@@ -32,7 +33,7 @@ def getAllClientAccs():
 
 
 # Get all accounts of a customer
-def getAllClientAccs():
+def readAllClientAccs():
     conn = openConnection()
     
     db = conn['Bank112']
@@ -47,7 +48,7 @@ def getAllClientAccs():
 
 
 # Get all dividends paid within October 2024
-def getDividends():
+def readDividendsInOct2024():
     conn = openConnection()
     
     db = conn['Bank112']
@@ -60,8 +61,9 @@ def getDividends():
 
     closeConnection(conn)
 
+
 # Get certain account
-def readFindOneAcc():
+def readOneAcc():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -75,15 +77,15 @@ def readFindOneAcc():
 
 
 # Get inactive accounts (more than a year)
-def getInactiveAcc():
+def readInactiveAcc():
     conn = openConnection()
 
     db = conn['Bank112']
     collection = db['account']
 
-    one_year = datetime.now() - timedelta(days=365)
+    one_year_ago = datetime.now() - timedelta(days=365)
 
-    results = collection.find({ 'last_activity_date': { '$lt': one_year } })
+    results = collection.find({ 'last_activity_date': { '$lt': one_year_ago } })
 
     for result in results:
         print(result)
@@ -92,7 +94,7 @@ def getInactiveAcc():
 
 
 # Get accounts exceeding threshold
-def getExceedingAcc():
+def readExceedingAcc():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -107,7 +109,7 @@ def getExceedingAcc():
 
 
 # Get accounts sorted by balance
-def getAccBalance():
+def readAccBalance():
     conn = openConnection()
     
     db = conn['Bank112']
@@ -122,7 +124,7 @@ def getAccBalance():
 
 
 # Get overdue shares
-def getOverdueShares():
+def readOverdueShares():
     conn = openConnection()
     
     db = conn['Bank112']
@@ -139,7 +141,7 @@ def getOverdueShares():
 # AGGREGATION PIPELINE
 
 # Get total dividends history of a client & total per issuer. Sorted from 
-def getTotalDividends():
+def aggregateTotalDividends():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -154,7 +156,7 @@ def getTotalDividends():
         }, {
             '$group': {
                 '_id': '$share_id', 
-                'issuer': '$account_from'
+                'issuer': '$account_from',
                 'total': {
                     '$sum': '$amount'
                 }
@@ -178,7 +180,7 @@ def getTotalDividends():
 
 
 # Get shares owned by a customer. Sort by most to least shares.
-def getShares():
+def aggregateSharesByCustomer():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -212,8 +214,9 @@ def getShares():
 
     results = collection.aggregate(pipeline)
 
-    # Get shares owned by all customers. Grouped by city - not sure if correct ?
-def getSharesByCity():
+
+# Get shares owned by all customers. Grouped by city - not sure if correct ?
+def aggregateSharesByCity():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -245,8 +248,8 @@ def getSharesByCity():
     results = collection.aggregate(pipeline)
 
 
-    # Get total balance accross accounts by currency
-def getTotalBalanceByCurrency():
+# Get total balance accross accounts by currency
+def aggregateTotalBalanceByCurrency():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -267,13 +270,13 @@ def getTotalBalanceByCurrency():
     results = collection.aggregate(pipeline)
 
 
-# FOR REVIEW
+# UPDATE (FOR REVIEW)
 
 # Updating due date for shares of a certain issuer.
-def setDueDate():
+def updateSharesDueDate():
     conn = openConnection()
 
-    # because not all shares earn dividends ?
+    # because not all shares earn dividends ? (!)
 
     db = conn['Bank112']
     collection = db['shares']
@@ -296,7 +299,7 @@ def setDueDate():
 
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
-def markOverdue():
+def updateSharesOverdue():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -342,3 +345,19 @@ def markOverdue():
     ]
 
     results = collection.aggregate(pipeline)
+
+
+# DELETE (FOR REVIEW)
+
+# Deleting shares documents without any shares owned
+def deleteEmptyShares():
+    conn = openConnection()
+    
+    db = conn['Bank112']
+    collection = db['shares']
+
+    results = collection.delete_many({ 'total_owned': 0 })
+
+    print(results)
+
+    closeConnection(conn)
