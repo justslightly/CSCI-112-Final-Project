@@ -3,10 +3,9 @@ from datetime import *
 from random import *
 
 def openConnection():
-    host = '172.31.51.157'
-    port = 27017
+    url = 'mongodb+srv://group4:2PFTvj2srxCpOfED@csci112-group4.mu6gp.mongodb.net/'
 
-    conn = MongoClient(host,port)
+    conn = MongoClient(url)
 
     return conn
 
