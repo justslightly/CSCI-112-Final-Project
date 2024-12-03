@@ -194,7 +194,7 @@ def readOneAcc(account_no):
 # readOneAcc("0-04022023-0")
 
 # Get accounts more than a year ago 
-def getInactiveAcc():
+def getOneYearAcc():
     conn = openConnection()
 
     db = conn['Bank112']
