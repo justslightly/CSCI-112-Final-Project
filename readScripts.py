@@ -193,22 +193,21 @@ def readOneAcc(account_no):
 
 # readOneAcc("0-04022023-0")
 
-# Get inactive accounts (more than a year)
-def readInactiveAcc():
+# Get accounts more than a year ago 
+def getInactiveAcc():
     conn = openConnection()
 
     db = conn['Bank112']
     collection = db['account']
 
-    one_year_ago = datetime.now() - timedelta(days=365)
+    one_year = datetime.now() - timedelta(days=365)
 
-    results = collection.find({ 'last_activity_date': { '$lt': one_year_ago } })
+    results = collection.find({ 'date_created': { '$lt': one_year } })
 
     for result in results:
         print(result)
 
     closeConnection(conn)
-
 
 # Get accounts exceeding threshold
 def readExceedingAcc():
@@ -240,21 +239,33 @@ def readAccBalance():
     closeConnection(conn)
 
 
-# Get overdue shares
-def readOverdueShares():
+# Get unpaid shares
+def getOverdueShares():
     conn = openConnection()
     
     db = conn['Bank112']
     collection = db['shares']
 
-    results = collection.find({ 'status': 'overdue' })
+    results = collection.find({ 'status': 'Unpaid' })
 
     for result in results:
         print(result)
 
     closeConnection(conn)
+   
 
-# readOverdueShares()
+ # Get payment date of specific dividend 
+def getDivPaymentDate(account_number):
+    conn = openConnection()
+
+    db = conn['Bank112']
+    collection = db['shares']
+
+    result = collection.find_one({ 'account_number': account_number }, { 'due_date': 1, '_id': 0 })
+
+    closeConnection(conn)
+
+    return results
 
 
 # AGGREGATION PIPELINES
@@ -409,7 +420,7 @@ def aggregateSharesByCustomer():
     results = collection.aggregate(pipeline)
 
 
-# Get shares owned by all customers. Grouped by city - not sure if correct ?
+# Get shares owned by all customers. Grouped by city.
 def aggregateSharesByCity():
     conn = openConnection()
 
