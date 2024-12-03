@@ -1,285 +1,7 @@
 from pymongo import *
 from datetime import *
-from utilization import *
-from insertData import *
+from utils import *
 import random as r
-
-def createCustomer():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['account']
-
-    print(f'Connected to database: {db.name}')
-
-    ctr = 0
-
-    while ctr < 1000:
-
-        fnameIndex = r.randint(0,29)
-        lnameIndex = r.randint(0,29)
-        year = r.randint(2016, 2024)
-        month = r.randint(1,11)
-        address = r.randint(0,99)
-        
-        if month in [1,3,5,7,8,10,12]:
-            day = r.randint(1,31)
-        elif month == 2:
-            day = r.randint (1,28)
-        else:
-            day = r.randint(1,30)
-        
-        openDate = datetime(year, month, day)
-
-
-        byear = r.randint(1945, 2006)
-        bmonth = r.randint(1,12)
-        
-        if bmonth in [1,3,5,7,8,10,12]:
-            bday = r.randint(1,31)
-        elif bmonth == 2:
-            bday = r.randint (1,28)
-        else:
-            bday = r.randint(1,30)
-
-        birthdate = datetime(byear, bmonth, bday)
-
-        finalDoc = {
-            '_id': ctr,
-            'first_name': firstName[fnameIndex],
-            'last_name': lastName[lnameIndex],
-            'date_opened': openDate,
-            'address': cities_countries[address],
-            'birthdate': birthdate
-        }
-
-        collection.insert_one(finalDoc)
-
-        ctr += 1
-
-def createAccount():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['customer']
-    acct_col = db['account']
-
-    print(f'Connected to database: {db.name}')
-
-    pipeline = [
-    {
-        "$lookup": {
-            "from": "customer",             
-            "localField": "customer_id",    
-            "foreignField": "_id",         
-            "as": "customer_data"           
-        }
-    },
-    {
-        "$unwind": "$customer_data"  
-    },
-    {
-        "$addFields": {
-            "account_number": {
-                "$concat": [
-                    { "$toString": "$customer_id" },  
-                    "-",
-                    { "$dateToString": { 
-                        "format": "%Y%m%d", 
-                        "date": "$customer_data.date_opened"  
-                    }}
-                ]
-            }
-        }
-    },
-    {
-        "$project": {
-            "address": "$customer_data.address",      
-            "date_opened": "$customer_data.date_opened",
-            "account_number": 1                   
-        }
-    }
-]
-
-    results = acct_col.aggregate(pipeline)
-
-    for result in results:
-        acct_col.update_one(
-            {"_id": result["_id"]}, 
-            {"$set": {
-                "address": result["address"],              
-                "date_opened": result["date_opened"],     
-                "account_number": result["account_number"] 
-            }}
-        )
-
-def editAccount():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['account']
-
-    print(f'Connected to database: {db.name}')
-
-    ctr = 0
-
-    while ctr < 1000:
-
-        acct_type = r.randint(0,1)
-        balance = r.randint(1000,10000000)
-        curr = r.randint(0,9)
-        clientAcc = r.randint(0,1)        
-
-        collection.update_one(
-            {"customer_id":ctr},
-            {"$set": {"account_type":type_account[acct_type],
-                      "balance":balance,
-                      "currency":currencies[curr],
-                      "clientAcc": clientAcc
-                      }}
-                              
-                              
-        )
-
-        ctr += 1
-
-def createIssuer():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['issuer']
-
-    print(f'Connected to database: {db.name}')
-    
-    ctr = 0 
-
-    while ctr < 20:
-        dividendFreq = r.randint(0,3)
-        totalShares = r.randint(1000000,10000000)
-        sold_shares = r.randint(0,int(totalShares/2))
-        cost_per_share = r.uniform(0,4)
-
-        finalDoc = {
-            '_id': ctr,
-            'name': issuers[ctr],
-            'dividend': div_freq[dividendFreq],
-            'total_shares': totalShares,
-            'sold_shares': sold_shares,
-            'cost_per_share': cost_per_share
-        }
-
-        collection.insert_one(finalDoc)
-
-        ctr += 1
-
-def addOrders():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['account']
-
-    pipeline = [
-        {
-            '$match':{
-                'clientAcc':1
-            }
-        }
-    ]
-
-    clientAccounts = collection.aggregate(pipeline)
-
-    for i in clientAccounts:
-        ord_ctr = 0
-        num_order = r.randint(1, 4)
-        issuer_rand = r.sample(range(0, 19), num_order)
-        orderList = []  
-        while ord_ctr < len(issuer_rand):  
-            addOrder = {'issuer_id': issuer_rand[ord_ctr]}
-            orderList.append(addOrder)  
-            ord_ctr += 1  
-        print(orderList)
-        print(i['customer_id'])
-        collection.update_one(
-            {'customer_id':i['customer_id']},
-            {'$set':
-                {
-                    'orders': orderList
-                }
-            }
-        )
-
-def addSelling():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['account']
-
-    pipeline = [
-        {
-            '$match':{
-                'clientAcc':1
-            }
-        }
-    ]
-
-    clientAccounts = collection.aggregate(pipeline)
-
-    for i in clientAccounts:
-        sell_ctr = 0
-        num_sell = r.randint(1, 2)
-        issuer_rand = r.sample(range(0, 19), num_sell)
-        sellList = []  
-        while sell_ctr < len(issuer_rand):  
-            addOrder = {'issuer_id': issuer_rand[ord_ctr]}
-            sellList.append(addOrder)  
-            ord_ctr += 1  
-        print(sellList)
-        print(i['customer_id'])
-        collection.update_one(
-            {'customer_id':i['customer_id']},
-            {'$set':
-                {
-                    'selling': sellList
-                }
-            }
-        )
-
-def createShares():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['account']
-    
-    
-    pipeline = [
-    {
-    "$match": {
-        "orders": { "$exists": True, "$ne": [] }
-    }   
-    },
-    {
-    "$unwind": "$orders"
-    },
-    {
-    "$project": {
-        "account_number": 1,
-        "issuer_id": "$orders.issuer_id",
-        }
-    },
-    {
-    '$out': { 'db': 'Bank112', 'coll': 'shares' }
-    }
-    ]
-
-    collection.aggregate(pipeline)
-
-def editShares():
-    conn = openConnection()
-    db = conn['Bank112'] 
-    collection = db['shares']
-
-    cursor = collection.find()
-
-    for document in cursor:
-        rtotal = r.randint(100,4000)
-        collection.update_one(
-            {'_id':document['_id']},
-            {'$set':{'total_owned': rtotal}}
-        )
-
 
 firstName = [
     "John",
@@ -489,6 +211,271 @@ issuers = [
     "PrimeHorizon Labs"
 ]
 
-div_freq = [12,6,3,1]
+start_date = datetime(2024, 12, 4)
 
+def randomDue(start_date, num_dates, max_days=30):
+    due_dates = []
+    
+    for _ in range(num_dates):
+        random_days = r.randint(1, 30)
+        due_date = start_date + timedelta(days=random_days)
+        due_dates.append(datetime.strptime(due_date.strftime("%Y-%m-%d"),"%Y-%m-%d"))
+    
+    return due_dates
+
+due_dates = randomDue(start_date, 20)
+
+
+def createCustomer():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['customer']
+
+    print(f'Connected to database: {collection.name}')
+    print(f'Creating Customers')
+
+    ctr = 0
+
+    while ctr < 1000:
+
+        fnameIndex = r.randint(0,29)
+        lnameIndex = r.randint(0,29)
+        year = r.randint(2016, 2024)
+        month = r.randint(1,11)
+        address = r.randint(0,99)
+        
+        if month in [1,3,5,7,8,10,12]:
+            day = r.randint(1,31)
+        elif month == 2:
+            day = r.randint (1,28)
+        else:
+            day = r.randint(1,30)
+        
+        openDate = datetime(year, month, day)
+
+
+        byear = r.randint(1945, 2006)
+        bmonth = r.randint(1,12)
+        
+        if bmonth in [1,3,5,7,8,10,12]:
+            bday = r.randint(1,31)
+        elif bmonth == 2:
+            bday = r.randint (1,28)
+        else:
+            bday = r.randint(1,30)
+
+        birthdate = datetime(byear, bmonth, bday)
+
+        finalDoc = {
+            'customer_id': ctr,
+            'first_name': firstName[fnameIndex],
+            'last_name': lastName[lnameIndex],
+            'date_opened': openDate,
+            'address': cities_countries[address],
+            'birthdate': birthdate
+        }
+
+        collection.insert_one(finalDoc)
+
+        if ctr % 100 == 0:
+            print(f"Progress: {ctr}/1000 documents inserted...")
+
+        ctr += 1
+
+def createAccount():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['customer']
+    acct_col = db['account']
+
+    print(f'Connected to database: {db.name}')
+    print(f'Creating accounts')
+
+    ctr = 0
+
+    customers = collection.find()
+
+    for customer in customers:
+        acct_type = r.randint(0,1)
+        balance = r.randint(1000,10000000)
+        curr = r.randint(0,9)
+        clientAcc = r.randint(0,1)
+
+        id = customer['date_opened'].strftime('%d%m%Y')
+
+        account_document = {
+                "customer_id": customer["customer_id"],  
+                "account_number": f'{customer["customer_id"]}-{id}-{clientAcc}',
+                "account_type": type_account[acct_type],
+                "balance":balance,
+                "date_created": customer["date_opened"],
+                "address": customer["address"],
+                "currency": currencies[curr],
+                "clientAcc":clientAcc
+            }
+        
+        acct_col.insert_one(account_document)
+        if ctr % 100 == 0:
+            print(f"Progress: {ctr}/1000 documents inserted...")
+        
+        ctr+=1
+
+def createIssuer():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['issuer']
+
+    print(f'Connected to database: {db.name}')
+
+    print('Adding Issuers')
+    
+    ctr = 0 
+
+    while ctr < 20:
+        dividendFreq = r.randint(0,3)
+        totalShares = r.randint(1000000,10000000)
+        sold_shares = r.randint(0,int(totalShares/2))
+        cost_per_share = r.uniform(0,4)
+
+        finalDoc = {
+            'issuer_id': ctr,
+            'name': issuers[ctr],
+            'total_shares': totalShares,
+            'sold_shares': sold_shares,
+            'cost_per_share': cost_per_share
+        }
+
+        collection.insert_one(finalDoc)
+
+        ctr += 1
+
+def addOrders():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['account']
+
+    print('Adding Order List')
+
+    pipeline = [
+        {
+            '$match':{
+                'clientAcc':1
+            }
+        }
+    ]
+
+    clientAccounts = collection.aggregate(pipeline)
+
+    for i in clientAccounts:
+        ord_ctr = 0
+        num_order = r.randint(1, 4)
+        issuer_rand = r.sample(range(0, 19), num_order)
+        orderList = []  
+
+        while ord_ctr < len(issuer_rand):  
+            addOrder = {'issuer_id': issuer_rand[ord_ctr]}
+            orderList.append(addOrder)  
+            ord_ctr += 1  
+
+        collection.update_one(
+            {'customer_id':i['customer_id']},
+            {'$set':
+                {
+                    'orders': orderList
+                }
+            }
+        )
+
+def addSelling():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['account']
+
+    print("Adding Selling List")
+
+    pipeline = [
+        {
+            '$match':{
+                'clientAcc':1
+            }
+        }
+    ]
+
+    clientAccounts = collection.aggregate(pipeline)
+
+    for i in clientAccounts:
+        sell_ctr = 0
+        num_sell = r.randint(1, 2)
+        issuer_rand = r.sample(range(0, 19), num_sell)
+        sellList = []  
+
+        while sell_ctr < len(issuer_rand):  
+            addOrder = {'issuer_id': issuer_rand[sell_ctr]}
+            sellList.append(addOrder)  
+            sell_ctr += 1  
+
+        collection.update_one(
+            {'customer_id':i['customer_id']},
+            {'$set':
+                {
+                    'selling': sellList
+                }
+            }
+        )
+
+def createShares():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['account']
+    shares_col = db['shares']
+
+    print('Creating Shares')
+    
+    pipeline = [
+    {
+    "$match": {
+        "orders": { "$exists": True, "$ne": [] }
+    }   
+    },
+    {
+    "$unwind": "$orders"
+    },
+    {
+    "$project": {
+        "_id":0,
+        "account_number": 1,
+        "issuer_id": "$orders.issuer_id",
+        }
+    },
+    {
+    '$out': { 'db': 'Bank112', 'coll': 'shares' }
+    }
+    ]
+
+    collection.aggregate(pipeline)
+
+    cursor = shares_col.find()
+
+    for document in cursor:
+        rtotal = r.randint(100,4000)
+        shares_col.update_one(
+            {'_id':document['_id']},
+            {'$set':
+                {'total_owned': rtotal},
+            }
+        )
+    
+    #adding due dates for each issuer (same issuer = same date)
+    n = 0
+    print(due_dates)
+    status = "Unpaid"
+    while n < 20:
+        shares_col.update_many(
+            {'issuer_id':n},
+            {'$set':
+                {'due_date':due_dates[n],
+                 'status':"Unpaid"}
+            }
+        )
+        n+=1
 
