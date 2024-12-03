@@ -1,8 +1,98 @@
 from utils import *
+from pymongo import *
+from datetime import datetime
 
-# READ
 
-# Retrieve customers
+def openConnection():
+   url = 'mongodb+srv://test_user1:123@csci112-group4.mu6gp.mongodb.net/'
+   conn = MongoClient(url)
+   return conn
+
+
+def closeConnection(conn):
+   conn.close()
+
+# PART 1: READ FUNCTIONS
+# TESTED ONES:
+    # readOneAcc("0-04022023-0")
+    # readOneCustomer(2)
+    # readCustomers()
+    # readAllClients()
+    # readCustomerAccs(4)
+    # readCustomerAccs(979)
+    # readDividendHistory("648-18092017-1", 2024, 10, 1, 2024, 10, 31)
+
+# PART 2: AGG PIPELINES
+# TESTED ONES:
+    # aggregateTotalDividends()
+    # displayAggTotalDiv()
+
+# TESTED: Get certain account
+def readOneAcc(account_no):
+    conn = openConnection()
+
+    db = conn['Bank112']
+    collection = db['account']
+
+    result = collection.find_one({ 'account_number': account_no })
+
+    closeConnection(conn)
+
+    if result:
+        print(' ')
+        customer_id = result['customer_id']
+        account_number = result['account_number']
+        account_type = result['account_type']
+        balance = result['balance']
+        date_created = result['date_created']
+        address = result['address']
+        currency =  result['currency']
+        print(f'Customer ID: { customer_id }')
+        print(f'Account No: { account_number }')
+        print(f'Account Type: { account_type }')
+        print(f'Date Created: { date_created }')
+        print(f'Address: { address }')
+        print(f'Currency: { currency }')
+        print(f'Balance: { balance }')
+
+        if result['clientAcc'] == 1:
+            orders = result['orders']
+            selling = result['selling']
+            print(f'Orders: { orders }')
+            print(f'Selling: { selling }')
+        # print(result)
+
+# readOneAcc("0-04022023-0")
+
+# TESTED: Retrieve one customer
+def readOneCustomer(customer_id):
+    conn = openConnection()
+    
+    db = conn['Bank112']
+    collection = db['customer']
+
+    result = collection.find_one({ 'customer_id': customer_id })
+
+    if result:
+        print(' ')
+        customer_id = result['customer_id']
+        date_opened = result['date_opened']
+        address = result['address']
+        birthdate =  result['birthdate']
+        name = result['first_name'] + ' ' + result['last_name']
+        print(f'Customer ID: { customer_id }')
+        print(f'Customer Name: { name }')
+        print(f'Date Opened: { date_opened }')
+        print(f'Address: { address }')
+        print(f'Birthdate: { birthdate }')
+
+        # print(result)
+
+    closeConnection(conn)
+
+# readOneCustomer(2)
+
+# TESTED: Retrieve all customers
 def readCustomers():
     conn = openConnection()
     
@@ -12,12 +102,25 @@ def readCustomers():
     results = collection.find()
 
     for result in results:
-        print(result)
+        print(' ')
+        customer_id = result['customer_id']
+        date_opened = result['date_opened']
+        address = result['address']
+        birthdate =  result['birthdate']
+        name = result['first_name'] + ' ' + result['last_name']
+        print(f'Customer ID: { customer_id }')
+        print(f'Customer Name: { name }')
+        print(f'Date Opened: { date_opened }')
+        print(f'Address: { address }')
+        print(f'Birthdate: { birthdate }')
+
+        # print(result)
+
 
     closeConnection(conn)
 
+# readCustomers()
 
-# Read issuer
 def readIssuer(issuer_id):
     conn = openConnection()
     db = conn['Bank112']
@@ -43,51 +146,115 @@ def readShares(account_number, issuer_id):
     )
     return [i for i in result][0]
 
-
-# Get all dividend-earning accounts (client accounts)
-def readAllClientAccs():
+# TESTED: Get all dividend-earning accounts (client accounts)
+def readAllClients():
     conn = openConnection()
-    
+
     db = conn['Bank112']
     collection = db['account']
 
     results = collection.find({ 'clientAcc': 1 })
 
     for result in results:
-        print(result)
+        print(' ')
+        customer_id = result['customer_id']
+        account_number = result['account_number']
+        account_type = result['account_type']
+        balance = result['balance']
+        date_created = result['date_created']
+        address = result['address']
+        currency =  result['currency']
+        orders = result['orders']
+        selling = result['selling']
+        print(f'Customer ID: { customer_id }')
+        print(f'Account No: { account_number }')
+        print(f'Account Type: { account_type }')
+        print(f'Date Created: { date_created }')
+        print(f'Address: { address }')
+        print(f'Currency: { currency }')
+        print(f'Balance: { balance }')
+
+        if result['clientAcc'] == 1:
+            orders = result['orders']
+            selling = result['selling']
+            print(f'Orders: { orders }')
+            print(f'Selling: { selling }')
+        # print(result)
 
     closeConnection(conn)
 
+# readAllClients()
 
-# Get all accounts of a customer
-def readAllClientAccs():
+# TESTED: Get all accounts of a customer
+def readCustomerAccs(customer_id):
     conn = openConnection()
     
     db = conn['Bank112']
     collection = db['account']
-
-    results = collection.find({ 'customer_id': 4 })
+    results = collection.find({ 'customer_id': customer_id })
 
     for result in results:
-        print(result)
+        print(' ')
+        customer_id = result['customer_id']
+        account_number = result['account_number']
+        account_type = result['account_type']
+        balance = result['balance']
+        date_created = result['date_created']
+        address = result['address']
+        currency =  result['currency']
+        print(f'Customer ID: { customer_id }')
+        print(f'Account No: { account_number }')
+        print(f'Account Type: { account_type }')
+        print(f'Date Created: { date_created }')
+        print(f'Address: { address }')
+        print(f'Currency: { currency }')
+        print(f'Balance: { balance }')
+
+        if result['clientAcc'] == 1:
+            orders = result['orders']
+            selling = result['selling']
+            print(f'Orders: { orders }')
+            print(f'Selling: { selling }')
+        # print(result)
 
     closeConnection(conn)
 
+# readCustomerAccs(4)
+# readCustomerAccs(979)
 
-# Get all dividends paid within October 2024
-def readDividendsInOct2024():
+# TESTED: Get all dividends paid within October 2024
+# ADD DIVIDEND:TRUE in find
+def readDividendHistory(account_number, start_year, start_month, start_day, end_year, end_month, end_day):
     conn = openConnection()
     
     db = conn['Bank112']
     collection = db['transaction']
 
-    results = collection.find({ 'dividend': True, 'date_time': {'$gte': (2024, 10, 1), '$lte': (2024, 10, 31)} })
+    results = collection.find(
+        {   'account_to': account_number,
+            # 'dividend': 1,
+            'transaction_date': {
+                '$gte': datetime(int(start_year), int(start_month), int(start_day)), 
+                '$lte': datetime(int(end_year), int(end_month), int(end_day))
+                },
+        })
 
     for result in results:
-        print(result)
+        print(' ')
+        account_from = result['account_from']
+        account_to = result['account_to']
+        amount = result['amount']
+        transaction_date = result['transaction_date']
+        reference_number = result['reference_number']
+        # share_id = result['share_id']
+        # dividend = result['dividend']
+        print(f'Account from: { account_from }')
+        print(f'Account to: { account_to }')
+        print(f'Amount: { amount }')
+        print(f'Transaction Date: { transaction_date }')
+        print(f'Reference No.: { reference_number }')
 
     closeConnection(conn)
-
 
 # Get certain account
 def readOneAcc():
@@ -126,9 +293,12 @@ def readOneAcc():
 # readOneAcc("0-04022023-0")
 
 # Get accounts more than a year ago 
-def getInactiveAcc():
-    conn = openConnection()
+# accoutn 648-18092017-1 appears twice so it's good for demo
+# readDividendHistory("648-18092017-1", 2024, 10, 1, 2024, 10, 31)
 
+# Read inactive accounts (more than a year)
+def readInactiveAcc():
+    conn = openConnection()
     db = conn['Bank112']
     collection = db['account']
 
@@ -186,6 +356,8 @@ def readOverdueShares():
 
     closeConnection(conn)
 
+# readOverdueShares()
+
 
 # Get next (unpaid) dividend payments
 def readUnpaidDividends():
@@ -204,8 +376,8 @@ def readUnpaidDividends():
 
 # AGGREGATION PIPELINES
 
-# Get total dividends history of a client & total per issuer. Sorted from most to least.
-def aggregateTotalDividendsDesc():
+# TESTED Get total dividends history of a client & total per issuer. Sorted from most to least.
+def aggregateTotalDividends(account_number):
     conn = openConnection()
 
     db = conn['Bank112']
@@ -214,13 +386,12 @@ def aggregateTotalDividendsDesc():
     pipeline = [
         {
             '$match': {
-                'dividend': True,
-                'account_to': "0-20170209"
+                # 'dividend': True,
+                'account_to': account_number
             }
         }, {
             '$group': {
-                '_id': '$share_id', 
-                'issuer': '$account_from',
+                '_id': '$account_from', 
                 'total': {
                     '$sum': '$amount'
                 }
@@ -232,7 +403,7 @@ def aggregateTotalDividendsDesc():
         }, {
             '$project': {
                 '_id': 0,
-                'issuer': 1,
+                'Issuer_ID': '$_id',
                 'total': 1
             }
         }, {
@@ -242,6 +413,21 @@ def aggregateTotalDividendsDesc():
 
     results = collection.aggregate(pipeline)
 
+def displayAggTotalDiv():
+    db = conn['Bank112']
+    collection_totalDividends = db['totalDividends']
+
+    results_tD = collection_totalDividends.find()
+
+    for result in results_tD:
+        print(' ')
+        Issuer_ID = result['Issuer_ID']
+        total = result['total']
+        print(f'Issuer ID: { Issuer_ID }')
+        print(f'Total: { total }')
+
+# aggregateTotalDividends("1-05072021-1")
+# displayAggTotalDiv()
 
 # Get total dividends history of a client & total per issuer. Sorted from least to most.
 def aggregateTotalDividendsAsc():
@@ -446,3 +632,5 @@ def aggregateTotalBalanceByCurrency():
     ]
 
     results = collection.aggregate(pipeline)
+
+
