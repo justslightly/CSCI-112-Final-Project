@@ -467,7 +467,6 @@ def createShares():
     
     #adding due dates for each issuer (same issuer = same date)
     n = 0
-    print(due_dates)
     status = "Unpaid"
     while n < 20:
         shares_col.update_many(
@@ -479,3 +478,68 @@ def createShares():
         )
         n+=1
 
+def createTransaction():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['shares']
+    transac_col = db['transaction']
+
+    print('Creating Transactions')
+
+    pipeline = [
+    {
+    "$match": {
+        "status": { "$exists": True, "$ne": [] }
+        }   
+    },
+    {
+        '$lookup':{
+            "from": "issuer", 
+            "localField": "issuer_id", 
+            "foreignField": "issuer_id",  
+            "as": "divInfo"
+        }
+    },
+    {
+        '$unwind':'$divInfo'
+    },
+    {
+        '$project':{
+            '_id':0,
+            'account_from':'$issuer_id',
+            'account_to':'$account_number',
+            'amount':{'$multiply':['$divInfo.cost_per_share','$total_owned']},
+            "transaction_date": {
+                "$dateSubtract": {  
+                    "startDate": "$due_date",
+                    "unit": "month",
+                    "amount": 3
+                }
+            },
+            "reference_number": {
+                "$concat": [
+                    { "$toString":"$account_number"}, "-",
+                    { "$toString": "$divInfo.issuer_id" }, "-",
+                    { "$dateToString": { 
+                        "format": "%Y%m%d", 
+                        "date": {"$dateSubtract": 
+                            {  
+                            "startDate": "$due_date",
+                            "unit": "month",
+                            "amount": 3
+                            }
+                        } 
+                    } 
+                    }
+                ]
+            }
+        }
+    },
+    {
+        '$out': { 'db': 'Bank112', 'coll': 'transaction' }
+    }
+    ]
+
+    collection.aggregate(pipeline)
+
+createTransaction()
