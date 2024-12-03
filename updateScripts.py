@@ -1,4 +1,5 @@
 from utils import *
+from readScripts import *
 
 # UPDATE (FOR REVIEW)
 
@@ -26,6 +27,7 @@ def updateSharesDueDate():
     ]
 
     results = collection.aggregate(pipeline)
+    closeConnection(conn)
 
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
@@ -75,3 +77,31 @@ def updateSharesOverdue():
     ]
 
     results = collection.aggregate(pipeline)
+    closeConnection(conn)
+
+# Update shares for a given issuer and client
+def updateSharesCount(account_number, issuer_id, count):
+    print("updateSharesCount")
+    conn = openConnection()
+    db = conn['Bank112']
+    issuer = db['issuer']
+    shares = db['shares']
+    print("Issuer Before: ", readIssuer(issuer_id))
+
+    issuer_result = issuer.update_one(
+        {'issuer_id': issuer_id},
+        {'$inc':{'sold_shares':count}}
+    )
+    print("Issuer After : ", readIssuer(issuer_id))
+    print("Shares Before: ", readShares(account_number, issuer_id))
+    shares_result = shares.update_one(
+        {
+            'account_number': account_number, 
+            'issuer_id': issuer_id
+        },{
+            '$inc':{'total_owned':count}
+        }
+    )
+    print("Shares After : ", readShares(account_number, issuer_id))
+    closeConnection(conn)
+

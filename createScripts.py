@@ -542,4 +542,4 @@ def createTransaction():
 
     collection.aggregate(pipeline)
 
-createTransaction()
+# createTransaction()
