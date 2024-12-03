@@ -100,11 +100,34 @@ def readOneAcc():
 
     closeConnection(conn)
 
-    return results
+    if result:
+        print(' ')
+        customer_id = result['customer_id']
+        account_number = result['account_number']
+        account_type = result['account_type']
+        balance = result['balance']
+        date_created = result['date_created']
+        address = result['address']
+        currency =  result['currency']
+        print(f'Customer ID: { customer_id }')
+        print(f'Account No: { account_number }')
+        print(f'Account Type: { account_type }')
+        print(f'Date Created: { date_created }')
+        print(f'Address: { address }')
+        print(f'Currency: { currency }')
+        print(f'Balance: { balance }')
 
+        if result['clientAcc'] == 1:
+            orders = result['orders']
+            selling = result['selling']
+            print(f'Orders: { orders }')
+            print(f'Selling: { selling }')
+        # print(result)
 
-# Get inactive accounts (more than a year)
-def readInactiveAcc():
+# readOneAcc("0-04022023-0")
+
+# Get accounts more than a year ago 
+def getInactiveAcc():
     conn = openConnection()
 
     db = conn['Bank112']
