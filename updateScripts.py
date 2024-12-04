@@ -64,23 +64,23 @@ def updateSharesCount(account_number, issuer_id, count):
     db = conn['Bank112']
     issuer = db['issuer']
     shares = db['shares']
-    print("Issuer Before: ", readIssuer(issuer_id))
+    print("Issuer Sold Shares Before: ", readIssuer(int(issuer_id))['sold_shares'])
 
     issuer_result = issuer.update_one(
-        {'issuer_id': issuer_id},
+        {'issuer_id': int(issuer_id)},
         {'$inc':{'sold_shares':int(count)}}
     )
-    print("Issuer After : ", readIssuer(issuer_id))
-    print("Shares Before: ", readShares(account_number, issuer_id))
+    print("Issuer Sold Shares After : ", readIssuer(int(issuer_id))['sold_shares'])
+    print("Shares Total Owned Before: ", readShares(account_number, int(issuer_id))['total_owned'])
     shares_result = shares.update_one(
         {
             'account_number': account_number, 
-            'issuer_id': issuer_id
+            'issuer_id': int(issuer_id)
         },{
             '$inc':{'total_owned':int(count)}
         }
     )
-    print("Shares After : ", readShares(account_number, issuer_id))
+    print("Shares Total Owned After : ", readShares(account_number, int(issuer_id))['total_owned'])
     closeConnection(conn)
     
     

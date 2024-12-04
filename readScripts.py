@@ -310,7 +310,8 @@ def aggregateTotalDividends(account_number):
             '$project': {
                 '_id': 0,
                 'Issuer_ID': '$_id',
-                'total': 1
+                'total': 1,
+                'account_to': account_number
             }
         }, {
             '$out': 'totalDividends'
@@ -480,6 +481,8 @@ def aggregateSharesByCity():
         },
         {
             '$sort': { 'total_shares': -1 }
+        }, {
+            '$out': 'sharesByCity'
         }
     ]
 
@@ -507,6 +510,8 @@ def aggregateTotalBalanceByCurrency():
         },
         {
             '$sort': { 'total_balance': -1 }
+        }, {
+            '$out': 'totalBalanceByCurrency'
         }
     ]
 
