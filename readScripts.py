@@ -188,10 +188,25 @@ def readOverdueShares():
     closeConnection(conn)
 
 
+# Get next (unpaid) dividend payments
+def readUnpaidDividends():
+    conn = openConnection()
+    
+    db = conn['Bank112']
+    collection = db['shares']
+
+    results = collection.find({ 'status': 'Unpaid' })
+
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
+
+
 # AGGREGATION PIPELINES
 
 # Get total dividends history of a client & total per issuer. Sorted from most to least.
-def aggregateTotalDividends():
+def aggregateTotalDividendsDesc():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -230,7 +245,7 @@ def aggregateTotalDividends():
 
 
 # Get total dividends history of a client & total per issuer. Sorted from least to most.
-def aggregateTotalDividends():
+def aggregateTotalDividendsAsc():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -268,8 +283,47 @@ def aggregateTotalDividends():
     results = collection.aggregate(pipeline)
 
 
+# Get total dividends history of a client & total per time period. Sorted from most recent to latest. (FOR CHECKING)
+def aggregateDividendsByTime():
+    conn = openConnection()
+
+    db = conn['Bank112']
+    collection = db['transaction']
+
+    pipeline = [
+        {
+            '$match': {
+                'dividend': True,
+                'account_to': "0-20170209"
+            }
+        }, {
+            '$group': {
+                '_id': '$share_id', 
+                'date': '$transaction_date',
+                'total': {
+                    '$sum': '$amount'
+                }
+            }
+        }, {
+            '$sort': {
+                'date': -1
+            }
+        }, {
+            '$project': {
+                '_id': 0,
+                'date': 1,
+                'total': 1
+            }
+        }, {
+            '$out': 'dividendsByTime'
+        }
+    ]
+
+    results = collection.aggregate(pipeline)
+
+
 # Get shares owned by a customer. Sort by most to least shares.
-def aggregateSharesByCustomer():
+def aggregateSharesByCustomerDesc():
     conn = openConnection()
 
     db = conn['Bank112']
@@ -305,7 +359,7 @@ def aggregateSharesByCustomer():
 
 
 # Get shares owned by a customer. Sort by least to most shares.
-def aggregateSharesByCustomer():
+def aggregateSharesByCustomerAsc():
     conn = openConnection()
 
     db = conn['Bank112']
