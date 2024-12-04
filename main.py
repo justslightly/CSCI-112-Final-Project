@@ -156,7 +156,7 @@ while user_input!="X":
         due_year = input("Due year (YYYY): ")
         due_month = input("Due month (MM): ")
         due_day = input("Due day (DD): ")
-        updateSharesOverdue()
+        updateSharesOverdue(due_year,due_month, due_day)
     elif user_input=="U3":
         account_number = input("Account Number: ")
         issuer_id = input("Issuer ID: ")

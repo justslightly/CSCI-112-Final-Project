@@ -326,8 +326,8 @@ def aggregateTotalDividends(account_number):
     collection = db['totalDividends']
     results = collection.find()
     for result in results:
-        print(f'Issuer ID:  { result['Issuer_ID'] }')
-        print(f'Shares Total: { result['total']}')
+        print(f"Issuer ID:  { result['Issuer_ID'] }")
+        print(f"Shares Total: { result['total']}")
 
     closeConnection(conn)
 
@@ -373,8 +373,8 @@ def aggregateDividendsByTime(account_number):
     collection = db['dividendsByTime']
     results = collection.find()
     for result in results:
-        print(f'Time:  { result['_id'] }')
-        print(f'Sum of Dividends: { result['total'] }')
+        print(f"Time:  { result['_id'] }")
+        print(f"Sum of Dividends: { result['total'] }")
 
     closeConnection(conn)
 
@@ -426,8 +426,8 @@ def aggregateSharesByCustomer(account_number):
     collection = db['sortedSharesofAcc']
     results = collection.find()
     for result in results:
-        print(f'Issuer Name:  { result['_id'] }')
-        print(f'Shares Total: { result['total']}')
+        print(f"Issuer Name:  { result['_id'] }")
+        print(f"Shares Total: { result['total']}")
     closeConnection(conn)
 
 # Get shares owned by all customers. Grouped by city - not sure if correct ?
@@ -470,8 +470,8 @@ def aggregateSharesByCity():
     for result in results:
         if count > 10:
             break
-        print(f'City:  { result['_id'] }')
-        print(f'Shares Total: { result['total_shares']}')
+        print(f"City:  { result['_id'] }")
+        print(f"Shares Total: { result['total_shares']}")
         count += 1
 
     closeConnection(conn)
