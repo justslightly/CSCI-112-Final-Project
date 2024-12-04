@@ -35,7 +35,7 @@ def readCustomer(customer_id):
     conn = openConnection()
     db = conn['Bank112']
     collection = db['customer']
-    result = collection.find_one({ 'customer_id': customer_id })
+    result = collection.find_one({ 'customer_id': int(customer_id) })
     if result:
         print(' ')
         customer_id = result['customer_id']
