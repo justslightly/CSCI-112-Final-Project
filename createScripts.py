@@ -174,20 +174,6 @@ cities_countries = [
 
 type_account = ['Savings', 'Checking']
 
-currencies = [
-    "USD",  # United States Dollar
-    "EUR",  # Euro
-    "JPY",  # Japanese Yen
-    "GBP",  # British Pound Sterling
-    "AUD",  # Australian Dollar
-    "CAD",  # Canadian Dollar
-    "CHF",  # Swiss Franc
-    "CNY",  # Chinese Yuan
-    "HKD",  # Hong Kong Dollar
-    "PHP"   # Philippine Peso
-]
-
-
 issuers = [
     "Nexora Innovations",
     "AetherTech Solutions",
@@ -310,7 +296,6 @@ def createAccount():
                 "balance":balance,
                 "date_created": customer["date_opened"],
                 "address": customer["address"],
-                "currency": currencies[curr],
                 "clientAcc":clientAcc
             }
         
@@ -478,7 +463,7 @@ def createShares():
         )
         n+=1
 
-def createTransaction():
+def createDivTransaction():
     conn = openConnection()
     db = conn['Bank112'] 
     collection = db['shares']
@@ -532,6 +517,23 @@ def createTransaction():
                     } 
                     }
                 ]
+            },
+            "dividend":{'$literal':1},
+            "share_id":{
+                "$concat":[
+                    { "$toString": "$divInfo.issuer_id" },"-",
+                    { "$dateToString": { 
+                        "format": "%Y%m%d", 
+                        "date": {"$dateSubtract": 
+                            {  
+                            "startDate": "$due_date",
+                            "unit": "month",
+                            "amount": 3
+                            }
+                        } 
+                    } 
+                    }
+                ]
             }
         }
     },
@@ -542,4 +544,55 @@ def createTransaction():
 
     collection.aggregate(pipeline)
 
-# createTransaction()
+def createTransaction():
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['transaction']
+    acct_col = db['account']
+    
+    accounts = list(acct_col.find())
+
+    account_number = [item['account_number'] for item in accounts]
+
+    ctr = 0
+    while ctr < 500:
+        fromRand = r.randint(0,999)
+        toRand = r.randint(0,999)
+        amountRand = r.randint(1000,100000)
+
+        year = r.randint(2023, 2024)
+        month = r.randint(1,11)
+        
+        if month in [1,3,5,7,8,10,12]:
+            day = r.randint(1,31)
+        elif month == 2:
+            day = r.randint (1,28)
+        else:
+            day = r.randint(1,30)
+        
+        transactionDate = datetime(year, month, day)
+
+        acctFrom = account_number[fromRand]
+        acctTo = account_number[toRand]
+
+        refNo = str(acctFrom) + "-" + str(acctTo) + transactionDate.strftime("%Y%m%d")
+
+        document = {
+            "account_from": acctFrom,
+            "account_to": acctTo,
+            "amount": amountRand,
+            "transaction_date": transactionDate,
+            "reference_number": refNo,
+            "dividend":0
+        }
+
+        collection.insert_one(document)
+
+        if ctr % 100 == 0:
+            print(f"Progress: {ctr}/500 documents inserted...")
+
+        ctr += 1
+
+
+
+createTransaction()
