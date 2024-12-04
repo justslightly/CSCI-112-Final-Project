@@ -106,6 +106,7 @@ def createCustomer():
         if ctr % 100 == 0:
             print(f"Progress: {ctr}/1000 documents inserted...")
         ctr += 1
+    closeConnection(conn)
 
 def createAccount():
     conn = openConnection()
@@ -135,6 +136,7 @@ def createAccount():
         if ctr % 100 == 0:
             print(f"Progress: {ctr}/1000 documents inserted...")
         ctr+=1
+    closeConnection(conn)
 
 def createIssuer():
     conn = openConnection()
@@ -157,6 +159,8 @@ def createIssuer():
         }
         collection.insert_one(finalDoc)
         ctr += 1
+
+    closeConnection(conn)
 
 def addOrders():
     conn = openConnection()
@@ -189,6 +193,8 @@ def addOrders():
             }
         )
 
+    closeConnection(conn)
+
 def addSelling():
     conn = openConnection()
     db = conn['Bank112'] 
@@ -219,6 +225,7 @@ def addSelling():
                 }
             }
         )
+    closeConnection(conn)
 
 def createShares():
     conn = openConnection()
@@ -265,6 +272,8 @@ def createShares():
             }
         )
         n+=1
+
+    closeConnection(conn)
 
 def createDivTransaction():
     conn = openConnection()
@@ -340,6 +349,8 @@ def createDivTransaction():
     ]
     collection.aggregate(pipeline)
 
+    closeConnection(conn)
+
 def createTransaction():
     conn = openConnection()
     db = conn['Bank112'] 
@@ -376,3 +387,109 @@ def createTransaction():
         if ctr % 100 == 0:
             print(f"Progress: {ctr}/500 documents inserted...")
         ctr += 1
+
+def oneCustomer(NameFirst, NameLast, City, Birthdate):
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['customer']
+
+    print(f'connected to {db.name}')
+
+    lastID = collection.find_one(sort=[("customer_id", -1)])["customer_id"]
+
+
+    finalDoc = {
+    'customer_id': lastID+1,
+    'first_name': NameFirst,
+    'last_name': NameLast,
+    'date_opened': datetime.now(),
+    'address': City,
+    'birthdate': Birthdate
+    }
+
+    collection.insert_one(finalDoc)
+    closeConnection(conn)
+
+def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['customer']
+
+    custID = collection.find_one({"customer_id":customerID})["customer_id"]
+
+    final_doc = {
+        "customer_id": customerID,
+        "account_number": str(custID) + "-" + datetime.now().strftime("%Y%m%d") + "-" + str(clientAcct),
+        "account_type": AcctType,
+        "balance": Balance,
+        "date_created": datetime.now(),
+        "address": Address,
+        "clientAcc": clientAcct
+        }
+
+    collection.insert_one(final_doc)
+    closeConnection(conn)
+    
+def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['account']
+    shares_col = db['shares']
+
+    collection.update_one(
+        {"customer_id":customerID},
+        {"$set":
+         {
+             'orders': issuerID
+         }
+        }
+    )
+
+    final_doc = {
+        "account_number": AcctNumber,
+        "issuer_id": issuerID,
+        "total_owned": numShares,
+        "due_date": DueDate,
+        "status":"Unpaid"
+
+    }
+
+    shares_col.insert_one(final_doc)
+
+def oneSelling(customerID,issuerID):
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['account']
+    shares_col = db['shares']
+
+    collection.update_one(
+        {"customer_id":customerID},
+        {"$set":
+         {
+             'selling': issuerID
+         }
+        }
+    )
+
+def oneTransaction(acctFrom,acctTo,amount,div):
+    conn = openConnection()
+    db = conn['Bank112'] 
+    collection = db['transaction']
+
+    transactiondate = datetime.now()
+
+    final_doc = {
+    "account_from":acctFrom,
+    "account_to":acctTo,
+    "transaction_date": transactiondate,
+    "reference_number": str(acctFrom) +  "-" + str(acctTo) + "-" + transactiondate.strftime("%Y%m%d"),
+    "amount": amount,
+    "dividend": div,
+    "share_id": str(acctTo) + "-" + transactiondate.strftime("%Y%m%d"),
+
+    }
+
+    collection.insert_one(final_doc)
+
+
+
