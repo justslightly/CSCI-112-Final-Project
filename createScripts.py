@@ -488,7 +488,7 @@ def oneTransaction(acctFrom,acctTo,amount,div):
 
     transactiondate = datetime.now()
 
-    if div == 1:
+    if int(div) == 1:
         final_doc = {
         "account_from":acctFrom,
         "account_to":acctTo,
