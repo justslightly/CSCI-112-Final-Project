@@ -398,7 +398,7 @@ def oneCustomer(NameFirst, NameLast, City, BirthYear, BirthMonth, BirthDay):
     collection.insert_one(finalDoc)
 
     result = collection.find_one({'customer_id':newID})
-
+    print("Created Customer")
     print(f"Customer ID: {result['customer_id']}")
     print(f"First Name: {result['first_name']}")
     print(f"Last Name: {result['last_name']}")
@@ -429,6 +429,8 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
     acct_collection.insert_one(final_doc)
 
     result = acct_collection.find_one({'customer_id':customerID})
+    print("Created Account")
+    
     print(f"Customer ID: {result['customer_id']}")
     print(f"Account Number: {result['account_number']}")
     print(f"Account Type: {result['account_type']}")
@@ -463,6 +465,7 @@ def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
     }
 
     shares_col.insert_one(final_doc)
+    print("Inserted the Orders")
 
 
 
@@ -480,6 +483,7 @@ def oneSelling(customerID,issuerID):
          }
         }
     )
+    print("Inserted the Selling")
 
 def oneTransaction(acctFrom,acctTo,amount,div):
     conn = openConnection()
@@ -509,5 +513,7 @@ def oneTransaction(acctFrom,acctTo,amount,div):
         }
 
     collection.insert_one(final_doc)
+
+    print("Inserted the transaction")
 
 
