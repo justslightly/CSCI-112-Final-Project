@@ -298,7 +298,7 @@ def aggregateTotalDividends(account_number):
         }, {
             '$group': {
                 '_id': '$account_from', 
-                'total': {
+                'totEal': {
                     '$sum': '$amount'
                 }
             }
