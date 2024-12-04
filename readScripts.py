@@ -66,15 +66,25 @@ def readCustomer(customer_id):
     closeConnection(conn)
 
 # TESTED: Retrieve one issuer
-# ADD PRINTS
 def readIssuer(issuer_id):
     conn = openConnection()
     db = conn['Bank112']
     collection = db['issuer']
-    result = collection.find(
-        {'issuer_id': issuer_id}
-    )
-    return [i for i in result][0]
+    result = collection.find_one(
+        {'issuer_id': int(issuer_id)}
+)
+    issuer_id = result['issuer_id']
+    name = result['name']
+    total_shares = result['total_shares']
+    sold_shares =  result['sold_shares']
+    cps = result['cost_per_share']
+    print(f'Issuer ID: { issuer_id }')
+    print(f'Name: { name }')
+    print(f'Total Shares { total_shares }')
+    print(f'Shares Sold: { sold_shares }')
+    print(f'Cost per Share: { cps }')
+
+    return result
 
 # TESETED: Read shares
 def readShares(account_number, issuer_id):
