@@ -107,7 +107,7 @@ def updateSharesCount(account_number, issuer_id, count):
     
     
 # Updating due date for shares of a certain issuer.
-def setDueDate():
+def updatetDueDate():
     conn = openConnection()
     # because not all shares earn dividends ?
     db = conn['Bank112']

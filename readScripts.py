@@ -4,7 +4,7 @@ from datetime import datetime
 
 # PART 1: READ FUNCTIONS
 # TESTED ONES:
-    # readAcc("0-04022023-0")
+    # readAccount("0-04022023-0")
     # readCustomer(2)
     # readCustomers()
     # readClientAccs()
@@ -263,4 +263,17 @@ def readUnpaidDividends():
     results = collection.find({ 'status': 'Unpaid' })
     for result in results:
         print(result)
+    closeConnection(conn)
+
+def readAggTotalDiv():
+    conn = openConnection()
+    db = conn['Bank112']
+    collection_totalDividends = db['totalDividends']
+    results_tD = collection_totalDividends.find()
+    for result in results_tD:
+        print(' ')
+        Issuer_ID = result['Issuer_ID']
+        total = result['total']
+        print(f'Issuer ID: { Issuer_ID }')
+        print(f'Total: { total }')
     closeConnection(conn)

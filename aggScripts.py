@@ -1,6 +1,7 @@
 from pymongo import *
 from datetime import *
 from utils import *
+from readScripts import *
 import random as r
 
 # AGGREGATION PIPELINES
@@ -44,23 +45,6 @@ def aggregateTotalDividends(account_number):
     
     for result in results:
         print(result)
-
-    closeConnection(conn)
-
-def displayAggTotalDiv():
-    conn = openConnection()
-    db = conn['Bank112']
-    collection_totalDividends = db['totalDividends']
-
-    results_tD = collection_totalDividends.find()
-
-    for result in results_tD:
-        print(' ')
-        Issuer_ID = result['Issuer_ID']
-        total = result['total']
-        print(f'Issuer ID: { Issuer_ID }')
-        print(f'Total: { total }')
-        
 
     closeConnection(conn)
 
