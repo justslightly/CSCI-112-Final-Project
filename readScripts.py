@@ -282,7 +282,7 @@ def readAggTotalDiv():
 
 # AGGREGATION PIPELINES
 
-# TESTED Get total dividends history of a client & total per issuer. Sorted from most to least.
+# TESTED Get total dividends history of a client & total per issuer.
 def aggregateTotalDividends(account_number):
     conn = openConnection()
 
@@ -292,7 +292,7 @@ def aggregateTotalDividends(account_number):
     pipeline = [
         {
             '$match': {
-                # 'dividend': True,
+                'dividend': 1,
                 'account_to': account_number
             }
         }, {
@@ -327,52 +327,8 @@ def aggregateTotalDividends(account_number):
 # aggregateTotalDividends("1-05072021-1")
 # displayAggTotalDiv()
 
-# Get total dividends history of a client & total per issuer. Sorted from least to most.
-def aggregateTotalDividendsAsc():
-    conn = openConnection()
-
-    db = conn['Bank112']
-    collection = db['transaction']
-
-    pipeline = [
-        {
-            '$match': {
-                'dividend': True,
-                'account_to': "0-20170209"
-            }
-        }, {
-            '$group': {
-                '_id': '$share_id', 
-                'issuer': '$account_from',
-                'total': {
-                    '$sum': '$amount'
-                }
-            }
-        }, {
-            '$sort': {
-                'total': 1
-            }
-        }, {
-            '$project': {
-                '_id': 0,
-                'issuer': 1,
-                'total': 1
-            }
-        }, {
-            '$out': 'totalDividends'
-        }
-    ]
-
-    results = collection.aggregate(pipeline)
-    
-    for result in results:
-        print(result)
-
-    closeConnection(conn)
-
-
 # Get total dividends history of a client & total per time period. Sorted from most recent to latest. (FOR CHECKING)
-def aggregateDividendsByTime():
+def aggregateDividendsByTime(account_number):
     conn = openConnection()
 
     db = conn['Bank112']
@@ -382,7 +338,7 @@ def aggregateDividendsByTime():
         {
             '$match': {
                 'dividend': True,
-                'account_to': "0-20170209"
+                'account_to': account_number
             }
         }, {
             '$group': {
@@ -416,7 +372,7 @@ def aggregateDividendsByTime():
 
 
 # Get shares owned by a customer. Sort by most to least shares.
-def aggregateSharesByCustomerDesc():
+def aggregateSharesByCustomerDesc(account_number):
     conn = openConnection()
 
     db = conn['Bank112']
@@ -425,7 +381,7 @@ def aggregateSharesByCustomerDesc():
     pipeline = [
         {
             '$match': {
-                'account_id': "0-20170209"
+                'account_number': account_number
             }
         }, {
             '$group': {
@@ -457,7 +413,7 @@ def aggregateSharesByCustomerDesc():
 
 
 # Get shares owned by a customer. Sort by least to most shares.
-def aggregateSharesByCustomerAsc():
+def aggregateSharesByCustomerAsc(account_number):
     conn = openConnection()
 
     db = conn['Bank112']
@@ -466,7 +422,7 @@ def aggregateSharesByCustomerAsc():
     pipeline = [
         {
             '$match': {
-                'account_id': "0-20170209"
+                'account_number': account_number
             }
         }, {
             '$group': {

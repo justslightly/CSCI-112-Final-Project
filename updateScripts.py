@@ -5,7 +5,7 @@ from readScripts import *
 
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
-def updateSharesOverdue():
+def updateSharesOverdue(due_year, due_month, due_day):
     conn = openConnection()
 
     db = conn['Bank112']
@@ -15,7 +15,7 @@ def updateSharesOverdue():
     	# set overdue to overdue ones
         {
             '$match': {
-                'due_date': {'$exists': True, '$lt': (2024, 12, 7)}
+                'due_date': {'$exists': True, '$lt': (int(due_year), int(due_month), int(due_day))}
             }
         }, {
             '$set': {
@@ -26,7 +26,7 @@ def updateSharesOverdue():
         # set status 'today' to dividends due today
         {	
             '$match': {
-                'due_date': {'$exists': True, '$eq': (2024, 12, 7)}
+                'due_date': {'$exists': True, '$eq': (int(due_year), int(due_month), int(due_day))}
             }
         }, {
             '$set': {
@@ -37,7 +37,7 @@ def updateSharesOverdue():
         # remove status for dividends not urgent
         {	
             '$match': {
-                'due_date': {'$exists': True, '$gt': (2024, 12, 7)}
+                'due_date': {'$exists': True, '$gt': (int(due_year), int(due_month), int(due_day))}
             }
         }, {
             '$unset': {
@@ -68,7 +68,7 @@ def updateSharesCount(account_number, issuer_id, count):
 
     issuer_result = issuer.update_one(
         {'issuer_id': issuer_id},
-        {'$inc':{'sold_shares':count}}
+        {'$inc':{'sold_shares':int(count)}}
     )
     print("Issuer After : ", readIssuer(issuer_id))
     print("Shares Before: ", readShares(account_number, issuer_id))
@@ -77,7 +77,7 @@ def updateSharesCount(account_number, issuer_id, count):
             'account_number': account_number, 
             'issuer_id': issuer_id
         },{
-            '$inc':{'total_owned':count}
+            '$inc':{'total_owned':int(count)}
         }
     )
     print("Shares After : ", readShares(account_number, issuer_id))
@@ -85,7 +85,7 @@ def updateSharesCount(account_number, issuer_id, count):
     
     
 # Updating due date for shares of a certain issuer.
-def updatetDueDate():
+def updateSharesDueDate(issuer_id, due_year, due_month, due_day):
     conn = openConnection()
     # because not all shares earn dividends ?
     db = conn['Bank112']
@@ -94,11 +94,11 @@ def updatetDueDate():
     results = collection.update_many(
         {
             '$match': {
-                'issuer_id': "8"
+                'issuer_id': issuer_id
             }
         }, {
             '$set': {
-                'due_date': (2024, 11, 30)
+                'due_date': (int(due_year), int(due_month), int(due_day))
             }
         }, {
             '$out': 'shares'

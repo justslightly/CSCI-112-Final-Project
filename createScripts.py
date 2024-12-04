@@ -375,7 +375,7 @@ def createTransaction():
             print(f"Progress: {ctr}/500 documents inserted...")
         ctr += 1
 
-def oneCustomer(NameFirst, NameLast, City, Birthdate):
+def oneCustomer(NameFirst, NameLast, City, BirthYear, BirthMonth, BirthDay):
     conn = openConnection()
     db = conn['Bank112'] 
     collection = db['customer']
@@ -391,7 +391,7 @@ def oneCustomer(NameFirst, NameLast, City, Birthdate):
     'last_name': NameLast,
     'date_opened': datetime.now(),
     'address': City,
-    'birthdate': Birthdate
+    'birthdate': (int(BirthYear), int(BirthMonth), int(BirthDay))
     }
 
     collection.insert_one(finalDoc)
