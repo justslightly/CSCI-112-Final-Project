@@ -384,17 +384,27 @@ def oneCustomer(NameFirst, NameLast, City, BirthYear, BirthMonth, BirthDay):
 
     lastID = collection.find_one(sort=[("customer_id", -1)])["customer_id"]
 
+    newID = lastID+1
 
     finalDoc = {
-    'customer_id': lastID+1,
+    'customer_id': newID,
     'first_name': NameFirst,
     'last_name': NameLast,
     'date_opened': datetime.now(),
     'address': City,
-    'birthdate': (int(BirthYear), int(BirthMonth), int(BirthDay))
+    'birthdate': datetime(BirthYear,BirthMonth, BirthDay)
     }
 
     collection.insert_one(finalDoc)
+
+    result = collection.find_one({'customer_id':newID})
+    print(f"Customer ID: {result['customer_id']}")
+    print(f"First Name: {result['first_name']}")
+    print(f"Last Name: {result['last_name']}")
+    print(f"Date Opened: {result['date_opened']}")
+    print(f"Address: {result['address']}")
+    print(f'Birthdate: {result['birthdate']}')
+    
     closeConnection(conn)
 
 def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
