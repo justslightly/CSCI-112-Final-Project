@@ -91,6 +91,7 @@ def updateSharesDueDate(issuer_id, due_year, due_month, due_day):
     db = conn['Bank112']
     collection = db['shares']
     
+    print("Shares Due Date Before : ", readShares("", int(issuer_id))['due_date'])
     results = collection.update_many(
         {
             'issuer_id': int(issuer_id)
@@ -100,5 +101,6 @@ def updateSharesDueDate(issuer_id, due_year, due_month, due_day):
             }
         }
     )
+    print("Shares Due Date After  : ", readShares("", int(issuer_id))['due_date'])
     closeConnection(conn)
 

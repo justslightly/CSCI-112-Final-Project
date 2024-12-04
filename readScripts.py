@@ -79,17 +79,23 @@ def readIssuer(issuer_id):
     return [i for i in result][0]
 
 # TESETED: Read shares
-# ADD PRINTS
 def readShares(account_number, issuer_id):
     conn = openConnection()
     db = conn['Bank112']
-    collection = db['shares']   
-    result = collection.find(
-        {
-            'account_number': account_number,
-            'issuer_id': issuer_id
-        }
-    )
+    collection = db['shares']  
+    if account_number == "": 
+        result = collection.find(
+            {
+                'issuer_id': issuer_id
+            }
+        )
+    else: 
+        result = collection.find(
+            {
+                'account_number': account_number,
+                'issuer_id': issuer_id
+            }
+        )
     return [i for i in result][0]
 
 # TESTED: Retrieve all customers
