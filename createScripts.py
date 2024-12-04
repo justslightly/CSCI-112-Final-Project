@@ -458,6 +458,7 @@ def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
     final_doc = {
         "account_number": AcctNumber,
         "issuer_id": issuerID,
+        "share_id": str(r.randint(1000,10000)) + "-" + str(r.randint(1000,10000)),
         "total_owned": numShares,
         "due_date": DueDate,
         "status":"Unpaid"
