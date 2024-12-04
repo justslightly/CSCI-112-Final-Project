@@ -1,6 +1,7 @@
 from utils import *
 from pymongo import *
 from datetime import datetime
+import random as r
 
 # PART 1: READ FUNCTIONS
 # TESTED ONES:
