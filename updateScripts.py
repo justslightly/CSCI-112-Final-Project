@@ -104,4 +104,31 @@ def updateSharesCount(account_number, issuer_id, count):
     )
     print("Shares After : ", readShares(account_number, issuer_id))
     closeConnection(conn)
+    
+    
+# Updating due date for shares of a certain issuer.
+def setDueDate():
+    conn = openConnection()
+    # because not all shares earn dividends ?
+    db = conn['Bank112']
+    collection = db['shares']
+    
+    results = collection.update_many(
+        {
+            '$match': {
+                'issuer_id': "8"
+            }
+        }, {
+            '$set': {
+                'due_date': (2024, 11, 30)
+            }
+        }, {
+            '$out': 'shares'
+        }
+    )
+    
+    for result in results:
+            print(result)
+
+    closeConnection(conn)
 

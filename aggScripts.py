@@ -301,32 +301,6 @@ def aggregateTotalBalanceByCurrency():
 
     closeConnection(conn)
 
-# CONVERT TO UPDATE
-# Updating due date for shares of a certain issuer.
-def setDueDate():
-    conn = openConnection()
-    # because not all shares earn dividends ?
-    db = conn['Bank112']
-    collection = db['shares']
-    
-    results = collection.update_many(
-        {
-            '$match': {
-                'issuer_id': "8"
-            }
-        }, {
-            '$set': {
-                'due_date': (2024, 11, 30)
-            }
-        }, {
-            '$out': 'shares'
-        }
-    )
-    
-    for result in results:
-            print(result)
-
-    closeConnection(conn)
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
 def markOverdue():
