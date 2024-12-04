@@ -304,7 +304,7 @@ def aggregateTotalDividends(account_number):
         }, {
             '$group': {
                 '_id': '$account_from', 
-                'totEal': {
+                'total': {
                     '$sum': '$amount'
                 }
             }
@@ -326,8 +326,11 @@ def aggregateTotalDividends(account_number):
 
     results = collection.aggregate(pipeline)
     
+    collection = db['totalDividends']
+    results = collection.find()
     for result in results:
-        print(result)
+        print(f'Issuer ID:  { result['Issuer_ID'] }')
+        print(f'Shares Total: { result['total']}')
 
     closeConnection(conn)
 
@@ -370,14 +373,17 @@ def aggregateDividendsByTime(account_number):
 
     results = collection.aggregate(pipeline)
     
+    collection = db['dividendsByTime']
+    results = collection.find()
     for result in results:
-        print(result)
+        print(f'Time:  { result['_id'] }')
+        print(f'Sum of Dividends: { result['total'] }')
 
     closeConnection(conn)
 
 
 # Get shares owned by a customer. Sort by most to least shares.
-def aggregateSharesByCustomerDesc(account_number):
+def aggregateSharesByCustomer(account_number):
     conn = openConnection()
 
     db = conn['Bank112']
@@ -393,7 +399,7 @@ def aggregateSharesByCustomerDesc(account_number):
             }
         }, {
             '$match': {
-                'account_number': 'account_number'
+                'account_number': account_number
             }
         }, {
             '$unwind': '$issuer_data'
@@ -420,61 +426,12 @@ def aggregateSharesByCustomerDesc(account_number):
 
     results = collection.aggregate(pipeline)
     
+    collection = db['sortedSharesofAcc']
+    results = collection.find()
     for result in results:
-        print(result)
-
+        print(f'Issuer Name:  { result['_id'] }')
+        print(f'Shares Total: { result['total']}')
     closeConnection(conn)
-
-
-# Get shares owned by a customer. Sort by least to most shares.
-def aggregateSharesByCustomerAsc(account_number):
-    conn = openConnection()
-
-    db = conn['Bank112']
-    collection = db['shares']
-
-    pipeline = [
-        {
-            '$lookup': {
-                'from': 'issuer', 
-                'localField': 'issuer_id', 
-                'foreignField': 'issuer_id', 
-                'as': 'issuer_data'
-            }
-        }, {
-            '$match': {
-                'account_number': 'account_number'
-            }
-        }, {
-            '$unwind': '$issuer_data'
-        }, {
-            '$group': {
-                '_id': '$issuer_data.name', 
-                'total': {
-                    '$sum': '$total_owned'
-                }
-            }
-        }, {
-            '$sort': {
-                'total': 1
-            }
-        }, {
-            '$project': {
-                '_id': 1, 
-                'total': 1
-            }
-        }, {
-            '$out': 'sortedSharesofAcc'
-        }
-    ]
-
-    results = collection.aggregate(pipeline)
-    
-    for result in results:
-        print(result)
-
-    closeConnection(conn)
-
 
 # Get shares owned by all customers. Grouped by city - not sure if correct ?
 def aggregateSharesByCity():
@@ -510,7 +467,14 @@ def aggregateSharesByCity():
 
     results = collection.aggregate(pipeline)
     
+    collection = db['sharesByCity']
+    results = collection.find()
+    count=0
     for result in results:
-        print(result)
+        if count > 10:
+            break
+        print(f'City:  { result['_id'] }')
+        print(f'Shares Total: { result['total_shares']}')
+        count += 1
 
     closeConnection(conn)

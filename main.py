@@ -35,7 +35,7 @@ cities_countries = [
     "Dire Dawa, Ethiopia","Mekelle, Ethiopia"
 ]
 
-info = "~~~CREATE~~~\nC1)  Create random customers.\nC2)  Create random accounts.\nC3)  Create random issuers.\nC4)  Create random shares.\nC5)  Create transactions.\nC6)  Create dividend transactions.\nC7)  Add random orders.\nC8)  Add random selling.\nC9)  Add one customer.\nC10) Add one account.\nC11) Add one order.\nC12) Add one selling.\nC13) Add one transaction.\n\n~~~READ~~~\nR1)  Read selected account.\nR2)  Read selected customer.\nR3)  Read selected issuer.\nR4)  Read selected shares.\nR5)  Read all customers.\nR6)  Read all client accounts.\nR7)  Read all customer's accounts.\nR8)  Read all dividends paid within a time period.\nR9)  Read all inactive accounts.\nR10) Read exceeding accounts.\nR11) Read account balance.\nR12) Read overdue shares.\nR13) Read unpaid dividends.\nR14) Read total dividends aggregate.\n\n~~~UPDATE~~~\nU1)  Update due date for shares of a certain issuer.\nU2)  Update shares that are overdue.\nU3)  Update shares count for a selected issuer and client.\n\n~~~AGGREGATE~~~\nA1)  Aggregate total dividends history of a client per issuer.\nA2)  Aggregate total dividends history of a client per time period (recent to latest).\nA3)  Aggregate shares owend by a customer (most to least).\nA4)  Aggregate shares owned by a customer (least to most).\nA5)  Aggregate shares by city. \n\n~~~DELETE~~~\nD1)  Deleting all customers.\nD2)  Deleting all accounts.\nD3)  Deleting all issuers.\nD4)  Deleting all shares.\nD5)  Deleting all transactions.\nD6)  Deleting all aggregates.\nD7)  Deleting all empty shares.\n\n~~~END PROGRAM~~~\nX) End program.\n"
+info = "~~~CREATE~~~\nC1)  Create random customers.\nC2)  Create random accounts.\nC3)  Create random issuers.\nC4)  Create random shares.\nC5)  Create transactions.\nC6)  Create dividend transactions.\nC7)  Add random orders.\nC8)  Add random selling.\nC9)  Add one customer.\nC10) Add one account.\nC11) Add one order.\nC12) Add one selling.\nC13) Add one transaction.\n\n~~~READ~~~\nR1)  Read selected account.\nR2)  Read selected customer.\nR3)  Read selected issuer.\nR4)  Read selected shares.\nR5)  Read all customers.\nR6)  Read all client accounts.\nR7)  Read all customer's accounts.\nR8)  Read all dividends paid within a time period.\nR9)  Read all inactive accounts.\nR10) Read exceeding accounts.\nR11) Read account balance.\nR12) Read overdue shares.\nR13) Read unpaid dividends.\n\n~~~UPDATE~~~\nU1)  Update due date for shares of a certain issuer.\nU2)  Update shares that are overdue.\nU3)  Update shares count for a selected issuer and client.\n\n~~~AGGREGATE~~~\nA1)  Aggregate total dividends history of a client per issuer.\nA2)  Aggregate total dividends history of a client per time period (recent to latest).\nA3)  Aggregate shares owend by a customer \nA4)  Aggregate shares by city. \n\n~~~DELETE~~~\nD1)  Deleting all customers.\nD2)  Deleting all accounts.\nD3)  Deleting all issuers.\nD4)  Deleting all shares.\nD5)  Deleting all transactions.\nD6)  Deleting all aggregates.\nD7)  Deleting all empty shares.\n\n~~~END PROGRAM~~~\nX) End program.\n"
 
 print(info)
 user_input = input("Which method do you want to execute? ")
@@ -137,8 +137,6 @@ while user_input!="X":
         readOverdueShares()
     elif user_input=="R13":
         readUnpaidDividends()
-    elif user_input=="R14":
-        readAggTotalDiv()
     elif user_input=="U1":
         issuer_id = input("Issuer ID: ")
         due_year = input("Due year (YYYY): ")
@@ -158,17 +156,13 @@ while user_input!="X":
     elif user_input=="A1":
         account_number = input("Account Number: ")
         aggregateTotalDividends(account_number)
-        readAggTotalDiv()
     elif user_input=="A2":
         account_number = input("Account Number: ")
         aggregateDividendsByTime(account_number)
     elif user_input=="A3":
         account_number = input("Account Number: ")
-        aggregateSharesByCustomerDesc(account_number)
+        aggregateSharesByCustomer(account_number)
     elif user_input=="A4":
-        account_number = input("Account Number: ")
-        aggregateSharesByCustomerAsc(account_number)
-    elif user_input=="A5":
         aggregateSharesByCity()
     elif user_input=="D1":
         deleteCustomer()
