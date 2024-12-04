@@ -264,7 +264,8 @@ def setDueDate():
     # because not all shares earn dividends ?
     db = conn['Bank112']
     collection = db['shares']
-    pipeline = [
+    
+    results = collection.update_many(
         {
             '$match': {
                 'issuer_id': "8"
@@ -276,9 +277,12 @@ def setDueDate():
         }, {
             '$out': 'shares'
         }
-    ]
-    results = collection.aggregate(pipeline)
+    )
+    
+    for result in results:
+            print(result)
 
+        closeConnection(conn)
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
 def markOverdue():
