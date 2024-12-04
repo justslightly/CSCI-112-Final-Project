@@ -446,7 +446,7 @@ def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
 
     collection.update_one(
         {"customer_id":customerID},
-        {"$set":
+        {"$addToSet":
          {
              'orders': issuerID
          }
@@ -464,6 +464,8 @@ def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
 
     shares_col.insert_one(final_doc)
 
+
+
 def oneSelling(customerID,issuerID):
     conn = openConnection()
     db = conn['Bank112'] 
@@ -472,7 +474,7 @@ def oneSelling(customerID,issuerID):
 
     collection.update_one(
         {"customer_id":customerID},
-        {"$set":
+        {"$addToSet":
          {
              'selling': issuerID
          }
