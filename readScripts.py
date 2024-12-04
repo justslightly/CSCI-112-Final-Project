@@ -385,12 +385,21 @@ def aggregateSharesByCustomerDesc(account_number):
 
     pipeline = [
         {
+            '$lookup': {
+                'from': 'issuer', 
+                'localField': 'issuer_id', 
+                'foreignField': 'issuer_id', 
+                'as': 'issuer_data'
+            }
+        }, {
             '$match': {
                 'account_number': account_number
             }
         }, {
+            '$unwind': '$issuer_data'
+        }, {
             '$group': {
-                '_id': '$issuer_id', 
+                '_id': '$issuer_data.name', 
                 'total': {
                     '$sum': '$total_owned'
                 }
@@ -426,12 +435,21 @@ def aggregateSharesByCustomerAsc(account_number):
 
     pipeline = [
         {
+            '$lookup': {
+                'from': 'issuer', 
+                'localField': 'issuer_id', 
+                'foreignField': 'issuer_id', 
+                'as': 'issuer_data'
+            }
+        }, {
             '$match': {
                 'account_number': account_number
             }
         }, {
+            '$unwind': '$issuer_data'
+        }, {
             '$group': {
-                '_id': '$issuer_id', 
+                '_id': '$issuer_data.name', 
                 'total': {
                     '$sum': '$total_owned'
                 }
