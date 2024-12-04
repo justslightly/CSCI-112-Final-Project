@@ -5,7 +5,6 @@ from readScripts import *
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
 def updateSharesOverdue(due_year, due_month, due_day):
-    print("Updated Shares")
     conn = openConnection()
 
     db = conn['Bank112']
@@ -28,7 +27,8 @@ def updateSharesOverdue(due_year, due_month, due_day):
                 'status': 'unpaid'
             }
         }
-    )            
+    )
+    print("Updated Shares")  
     closeConnection(conn)
 
 # Update shares for a given issuer and client
