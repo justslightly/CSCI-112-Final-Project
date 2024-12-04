@@ -3,22 +3,7 @@ from pymongo import *
 from datetime import datetime
 import random as r
 
-# PART 1: READ FUNCTIONS
-# TESTED ONES:
-    # readAccount("0-04022023-0")
-    # readCustomer(2)
-    # readCustomers()
-    # readClientAccs()
-    # readCustomerAccs(4)
-    # readCustomerAccs(979)
-    # readDividendHistory("648-18092017-1", 2024, 10, 1, 2024, 10, 31)
-
-# PART 2: AGG PIPELINES
-# TESTED ONES:
-    # aggregateTotalDividends()
-    # displayAggTotalDiv()
-
-# TESTED: Get certain account
+# Get certain account
 def readAccount(account_no):
     conn = openConnection()
     db = conn['Bank112']
@@ -45,7 +30,7 @@ def readAccount(account_no):
             print(f'Orders: { orders }')
             print(f'Selling: { selling }')
 
-# TESTED: Retrieve one customer
+# Retrieve one customer
 def readCustomer(customer_id):
     conn = openConnection()
     db = conn['Bank112']
@@ -65,7 +50,7 @@ def readCustomer(customer_id):
         print(f'Birthdate: { birthdate }')
     closeConnection(conn)
 
-# TESTED: Retrieve one issuer
+# Retrieve one issuer
 def readIssuer(issuer_id):
     conn = openConnection()
     db = conn['Bank112']
@@ -73,11 +58,9 @@ def readIssuer(issuer_id):
     result = collection.find_one(
         {'issuer_id': int(issuer_id)}
     )
-    
-
     return result
 
-# TESETED: Read shares
+# Read shares
 def readShares(account_number, issuer_id):
     conn = openConnection()
     db = conn['Bank112']
@@ -97,7 +80,7 @@ def readShares(account_number, issuer_id):
         )
     return result
 
-# TESTED: Retrieve all customers
+# Retrieve all customers
 def readCustomers():
     conn = openConnection()
     db = conn['Bank112']
@@ -117,7 +100,7 @@ def readCustomers():
         print(f'Birthdate: { birthdate }')
     closeConnection(conn)
 
-# TESTED: Get all dividend-earning accounts (client accounts)
+# Get all dividend-earning accounts (client accounts)
 def readClientAccs():
     conn = openConnection()
     db = conn['Bank112']
@@ -146,7 +129,7 @@ def readClientAccs():
             print(f'Selling: { selling }')
     closeConnection(conn)
 
-# TESTED: Get all accounts of a customer
+# Get all accounts of a customer
 def readCustomerAccs(customer_id):
     conn = openConnection()
     
@@ -174,11 +157,10 @@ def readCustomerAccs(customer_id):
             selling = result['selling']
             print(f'Orders: { orders }')
             print(f'Selling: { selling }')
-        # print(result)
 
     closeConnection(conn)
 
-# TESTED: Get all dividends paid within October 2024
+# Get all dividends paid within October 2024
 def readDividendHistory(account_number, start_year, start_month, start_day, end_year, end_month, end_day):
     conn = openConnection()
     db = conn['Bank112']
@@ -198,8 +180,6 @@ def readDividendHistory(account_number, start_year, start_month, start_day, end_
         amount = result['amount']
         transaction_date = result['transaction_date']
         reference_number = result['reference_number']
-        # share_id = result['share_id']
-        # dividend = result['dividend']
         print(f'Account from: { account_from }')
         print(f'Account to: { account_to }')
         print(f'Amount: { amount }')
@@ -269,23 +249,32 @@ def readOverdueShares():
     collection = db['shares']
     results = collection.find({ 'status': 'overdue' })
     for result in results:
-        print(result)
+        print(f"Account Number: {result['account_number']}")
+        print(f"Issuer ID: {result['issuer_id']}")
+        print(f"Share ID: {result['share_id']}")
+        print(f"Total Owned: {result['total_owned']}")
+        print(f"Due date: {result['due_date']}")
+        print(f"Status: {result['status']}")
     closeConnection(conn)
 
 # Get next (unpaid) dividend payments
-# ADD PRINT
 def readUnpaidDividends():
     conn = openConnection()
     db = conn['Bank112']
     collection = db['shares']
     results = collection.find({ 'status': 'Unpaid' })
     for result in results:
-        print(result)
+        print(f"Account Number: {result['account_number']}")
+        print(f"Issuer ID: {result['issuer_id']}")
+        print(f"Share ID: {result['share_id']}")
+        print(f"Total Owned: {result['total_owned']}")
+        print(f"Due date: {result['due_date']}")
+        print(f"Status: {result['status']}")
     closeConnection(conn)
 
 # AGGREGATION PIPELINES
 
-# TESTED Get total dividends history of a client & total per issuer.
+# Get total dividends history of a client & total per issuer.
 def aggregateTotalDividends(account_number):
     conn = openConnection()
 
