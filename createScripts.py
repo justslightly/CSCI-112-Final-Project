@@ -488,16 +488,25 @@ def oneTransaction(acctFrom,acctTo,amount,div):
 
     transactiondate = datetime.now()
 
-    final_doc = {
-    "account_from":acctFrom,
-    "account_to":acctTo,
-    "transaction_date": transactiondate,
-    "reference_number": str(acctFrom) +  "-" + str(acctTo) + "-" + transactiondate.strftime("%Y%m%d"),
-    "amount": amount,
-    "dividend": div,
-    "share_id": str(acctTo) + "-" + transactiondate.strftime("%Y%m%d"),
-
-    }
+    if div == 1:
+        final_doc = {
+        "account_from":acctFrom,
+        "account_to":acctTo,
+        "transaction_date": transactiondate,
+        "reference_number": str(acctFrom) +  "-" + str(acctTo) + "-" + transactiondate.strftime("%Y%m%d"),
+        "amount": amount,
+        "dividend": div,
+        "share_id": str(acctTo) + "-" + transactiondate.strftime("%Y%m%d"),
+        }
+    else: 
+        final_doc = {
+        "account_from":acctFrom,
+        "account_to":acctTo,
+        "transaction_date": transactiondate,
+        "reference_number": str(acctFrom) +  "-" + str(acctTo) + "-" + transactiondate.strftime("%Y%m%d"),
+        "amount": amount,
+        "dividend": div,
+        }
 
     collection.insert_one(final_doc)
 
