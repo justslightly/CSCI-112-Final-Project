@@ -412,6 +412,7 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
     conn = openConnection()
     db = conn['Bank112'] 
     collection = db['customer']
+    acct_collection = db['account']
 
     custID = collection.find_one({"customer_id":customerID})["customer_id"]
 
@@ -425,9 +426,9 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
         "clientAcc": clientAcct
         }
 
-    collection.insert_one(final_doc)
+    acct_collection.insert_one(final_doc)
 
-    result = collection.find_one({'customer_id':customerID})
+    result = acct_collection.find_one({'customer_id':customerID})
     print(f"Customer ID: {result['customer_id']}")
     print(f"Account Number: {result['account_number']}")
     print(f"Account Type: {result['account_type']}")
@@ -436,6 +437,8 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
     print(f"Address: {result['address']}")
     print(f"Client Account: {result['clientAcc']}")
     closeConnection(conn)
+
+oneAccount(1001)
     
 def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
     conn = openConnection()
@@ -497,3 +500,5 @@ def oneTransaction(acctFrom,acctTo,amount,div):
     }
 
     collection.insert_one(final_doc)
+
+
