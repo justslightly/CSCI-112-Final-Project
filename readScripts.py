@@ -96,9 +96,7 @@ def readOneAcc():
     db = conn['Bank112']
     collection = db['account']
 
-    results = collection.find_one({ 'account_number': "0-20170209" })
-
-    closeConnection(conn)
+    result = collection.find_one({ 'account_number': "0-20170209" })
 
     if result:
         print(' ')
@@ -123,6 +121,7 @@ def readOneAcc():
             print(f'Orders: { orders }')
             print(f'Selling: { selling }')
         # print(result)
+    closeConnection(conn)
 
 # readOneAcc("0-04022023-0")
 
