@@ -1,8 +1,7 @@
 from utils import *
 from readScripts import *
 
-# UPDATE (FOR REVIEW)
-
+# UPDATE
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
 def updateSharesOverdue(due_year, due_month, due_day):
@@ -87,7 +86,6 @@ def updateSharesCount(account_number, issuer_id, count):
 # Updating due date for shares of a certain issuer.
 def updateSharesDueDate(issuer_id, due_year, due_month, due_day):
     conn = openConnection()
-    # because not all shares earn dividends ?
     db = conn['Bank112']
     collection = db['shares']
     
