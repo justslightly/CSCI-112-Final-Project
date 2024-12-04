@@ -63,6 +63,7 @@ def randomDue(start_date, num_dates, max_days=30):
         due_date = start_date + timedelta(days=random_days)
         due_dates.append(datetime.strptime(due_date.strftime("%Y-%m-%d"),"%Y-%m-%d"))
     return due_dates
+
 due_dates = randomDue(start_date, 20)
 
 def createCustomer():
@@ -257,7 +258,8 @@ def createShares():
         shares_col.update_one(
             {'_id':document['_id']},
             {'$set':
-                {'total_owned': rtotal},
+                {'total_owned': rtotal,
+                 'share_id': str(r.randint(1000,10000)) + "-" + str(r.randint(1000,10000))},
             }
         )
     #adding due dates for each issuer (same issuer = same date)
@@ -326,22 +328,7 @@ def createDivTransaction():
                     ]
                 },
                 "dividend":{'$literal':1},
-                "share_id":{
-                    "$concat":[
-                        { "$toString": "$divInfo.issuer_id" },"-",
-                        { "$dateToString": { 
-                            "format": "%Y%m%d", 
-                            "date": {"$dateSubtract": 
-                                {  
-                                "startDate": "$due_date",
-                                "unit": "month",
-                                "amount": 3
-                                }
-                            } 
-                        } 
-                        }
-                    ]
-                }
+                "share_id":"$share_id",
             }
         },{
             '$out': { 'db': 'Bank112', 'coll': 'transaction' }
@@ -490,6 +477,3 @@ def oneTransaction(acctFrom,acctTo,amount,div):
     }
 
     collection.insert_one(final_doc)
-
-
-
