@@ -33,13 +33,11 @@ def readAccount(account_no):
         balance = result['balance']
         date_created = result['date_created']
         address = result['address']
-        currency =  result['currency']
         print(f'Customer ID: { customer_id }')
         print(f'Account No: { account_number }')
         print(f'Account Type: { account_type }')
         print(f'Date Created: { date_created }')
         print(f'Address: { address }')
-        print(f'Currency: { currency }')
         print(f'Balance: { balance }')
         if result['clientAcc'] == 1:
             orders = result['orders']
@@ -68,15 +66,25 @@ def readCustomer(customer_id):
     closeConnection(conn)
 
 # TESTED: Retrieve one issuer
-# ADD PRINTS
 def readIssuer(issuer_id):
     conn = openConnection()
     db = conn['Bank112']
     collection = db['issuer']
-    result = collection.find(
-        {'issuer_id': issuer_id}
-    )
-    return [i for i in result][0]
+    result = collection.find_one(
+        {'issuer_id': int(issuer_id)}
+)
+    issuer_id = result['issuer_id']
+    name = result['name']
+    total_shares = result['total_shares']
+    sold_shares =  result['sold_shares']
+    cps = result['cost_per_share']
+    print(f'Issuer ID: { issuer_id }')
+    print(f'Name: { name }')
+    print(f'Total Shares { total_shares }')
+    print(f'Shares Sold: { sold_shares }')
+    print(f'Cost per Share: { cps }')
+
+    return result
 
 # TESETED: Read shares
 def readShares(account_number, issuer_id):
@@ -132,7 +140,6 @@ def readClientAccs():
         balance = result['balance']
         date_created = result['date_created']
         address = result['address']
-        currency =  result['currency']
         orders = result['orders']
         selling = result['selling']
         print(f'Customer ID: { customer_id }')
@@ -140,7 +147,6 @@ def readClientAccs():
         print(f'Account Type: { account_type }')
         print(f'Date Created: { date_created }')
         print(f'Address: { address }')
-        print(f'Currency: { currency }')
         print(f'Balance: { balance }')
         if result['clientAcc'] == 1:
             orders = result['orders']
@@ -165,13 +171,11 @@ def readCustomerAccs(customer_id):
         balance = result['balance']
         date_created = result['date_created']
         address = result['address']
-        currency =  result['currency']
         print(f'Customer ID: { customer_id }')
         print(f'Account No: { account_number }')
         print(f'Account Type: { account_type }')
         print(f'Date Created: { date_created }')
         print(f'Address: { address }')
-        print(f'Currency: { currency }')
         print(f'Balance: { balance }')
 
         if result['clientAcc'] == 1:
