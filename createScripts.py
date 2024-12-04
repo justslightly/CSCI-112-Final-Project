@@ -447,7 +447,7 @@ def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
     shares_col = db['shares']
 
     collection.update_one(
-        {"customer_id":customerID},
+        {"customer_id":int(customerID)},
         {"$addToSet":
          {
              'orders': issuerID
@@ -476,7 +476,7 @@ def oneSelling(customerID,issuerID):
     shares_col = db['shares']
 
     collection.update_one(
-        {"customer_id":customerID},
+        {"customer_id":int(customerID)},
         {"$addToSet":
          {
              'selling': issuerID
