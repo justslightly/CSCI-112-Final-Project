@@ -418,7 +418,7 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
 
     final_doc = {
         "customer_id": customerID,
-        "account_number": str(custID) + "-" + datetime.now().strftime("%Y%m%d") + "-" + str(clientAcct),
+        "account_number": str(custID['customer_id']) + "-" + datetime.now().strftime("%Y%m%d") + "-" + str(clientAcct),
         "account_type": AcctType,
         "balance": Balance,
         "date_created": datetime.now(),
@@ -446,7 +446,7 @@ def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
 
     collection.update_one(
         {"customer_id":customerID},
-        {"$set":
+        {"$addToSet":
          {
              'orders': issuerID
          }
@@ -464,6 +464,8 @@ def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
 
     shares_col.insert_one(final_doc)
 
+
+
 def oneSelling(customerID,issuerID):
     conn = openConnection()
     db = conn['Bank112'] 
@@ -472,7 +474,7 @@ def oneSelling(customerID,issuerID):
 
     collection.update_one(
         {"customer_id":customerID},
-        {"$set":
+        {"$addToSet":
          {
              'selling': issuerID
          }
