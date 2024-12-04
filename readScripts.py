@@ -462,9 +462,9 @@ def aggregateSharesByCity():
     pipeline = [
         {
             '$lookup': {
-                'from': 'customer',
-                'localField': 'issuer_id',
-                'foreignField': '_id',
+                'from': 'account',
+                'localField': 'account_number',
+                'foreignField': 'account_number',
                 'as': 'customer_data'
             }
         },
