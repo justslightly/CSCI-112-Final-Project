@@ -38,25 +38,25 @@ cities_countries = [
 info = "E) End Program\n###CREATE###\nC1) Create random customers.\nC2) Create random accounts.\nC3) Create random issuers.\nC4) Create random shares.\nC5) Create transactions.\nC6) Create dividend transactions.\nC7) Add random orders.\nC8) Add random selling.\nC9) Add one customer.\nC10)Add one account.\nC11)Add one order.\nC12)Add one selling.\nC13)Add one transaction.\n###READ###\nR1) Read selected account.\nR2) Read selected customer.\nR3) Read selected issuer.\nR4) Read selected shares.\nR5) Read all customers.\nR6) Read all client accounts.\nR7) Read all customer's accounts.\nR8) Read all dividends paid within a time period.\nR9) Read all inactive accounts.\nR10) Read exceeding accounts.\nR11) Read account balance.\nR12) Read overdue shares.\nR13) Read unpaid dividends.\nR14) Read total dividends aggregate.\n###UPDATE###\nU1) Update due date for shares of a certain issuer.\nU2) Update shares that are overdue.\nU3) Update shares count for a selected issuer and client.\n###AGGREGATE###\nA1) Aggregate total dividends history of a client per issuer.\nA2) Aggregate total dividends history of a client per time period (recent to latest).\nA3) Aggregate shares owend by a customer (most to least).\nA4) Aggregate shares owned by a customer (least to most).\nA5) Aggregate shares by city. \nA6) Aggregate total balance by currency.\n###DELETE###\nD1) Deleting all customers.\nD2) Deleting all accounts.\nD3) Deleting all issuers.\nD4) Deleting all shares.\nD5) Deleting all transactions.\nD6) Deleting all empty shares.\n"
 
 print(info)
-input = input("Which method do you want to execute? ")
-while input!="E":
-    if input=="C1":
+user_input = input("Which method do you want to execute? ")
+while user_input!="E":
+    if user_input=="C1":
         createCustomer()
-    elif input=="C2":
+    elif user_input=="C2":
         createAccount()
-    elif input=="C3":
+    elif user_input=="C3":
         createIssuer()
-    elif input=="C4":
+    elif user_input=="C4":
         createShares()
-    elif input=="C5":
+    elif user_input=="C5":
         createTransaction()
-    elif input=="C6":
+    elif user_input=="C6":
         createDivTransaction()
-    elif input=="C7":
+    elif user_input=="C7":
         addOrders()
-    elif input=="C8":
+    elif user_input=="C8":
         addSelling()
-    elif input=="C9":
+    elif user_input=="C9":
         NameFirst = input("First Name: ")
         NameLast = input("Last Name: ")
         City = input("City: ")
@@ -64,7 +64,7 @@ while input!="E":
         BirthMonth = input("Birth month (MM): ")
         BirthDay = input("Birth day (DD): ")
         oneCustomer(NameFirst, NameLast, City, BirthYear, BirthMonth, BirthDay)
-    elif input=="C10":
+    elif user_input=="C10":
         customerID = input("Customer ID: ")
         while True: 
             AcctType = input("Account Type (Savings or Checking): ")
@@ -78,18 +78,18 @@ while input!="E":
             if Address in cities_countries:
                 break
         oneAccount(customerID, AcctType, clientAcct, Balance, Address)
-    elif input=="C11":
+    elif user_input=="C11":
         customerID = input("Customer ID: ")
         issuerID = input("Issuer ID: ")
         numShares = int(input("Number of Shares: "))
         AcctNumber = input("Account Number: ")
         DueDate = input("Due Date: ")
         oneOrder(customerID, issuerID, numShares, AcctNumber, DueDate)
-    elif input=="C12":
+    elif user_input=="C12":
         customerID = input("Customer ID: ")
         issuerID = input("Issuer ID: ")
         oneSelling(customerID, issuerID)
-    elif input=="C13":
+    elif user_input=="C13":
         acctFrom = input("Account from: ")
         acctTo = input("Account to: ")
         amount = input("Amount: ")
@@ -98,27 +98,27 @@ while input!="E":
             if div in ["0", "1"]:
                 break
         oneTransaction(acctFrom, acctTo, amount, div)
-    elif input=="R1":
+    elif user_input=="R1":
         account_no = input("Account Number: ")
         readAccount(account_no)
-    elif input=="R2":
+    elif user_input=="R2":
         customer_id = input("Customer ID: ")
         readCustomer(customer_id)
-    elif input=="R3":
+    elif user_input=="R3":
         issuer_id = input("Issuer ID: ")
         readIssuer(issuer_id)
-    elif input=="R4":
+    elif user_input=="R4":
         account_number = input("Account Number: ")
         issuer_id = input("Issuer ID: ")
         readShares(account_number, issuer_id)
-    elif input=="R5":
+    elif user_input=="R5":
         readCustomers()
-    elif input=="R6":
+    elif user_input=="R6":
         readClientAccs()
-    elif input=="R7":
+    elif user_input=="R7":
         customer_id = input("Customer ID: ")
         readCustomerAccs(customer_id)
-    elif input=="R8":
+    elif user_input=="R8":
         account_number = input("Account Number: ")
         start_year = input("Start year (YYYY): ")
         start_month = input("Start month (MM): ")
@@ -127,63 +127,63 @@ while input!="E":
         end_month = input("End month (MM): ")
         end_day = input("End day (DD): ")
         readDividendHistory(account_number, start_year, start_month, start_day, end_year, end_month, end_day)
-    elif input=="R9":
+    elif user_input=="R9":
         readInactiveAcc()
-    elif input=="R10":
+    elif user_input=="R10":
         threshold = input("Threshold: ")
         readExceedingAcc(threshold)
-    elif input=="R11":
+    elif user_input=="R11":
         readAccBalance()
-    elif input=="R12":
+    elif user_input=="R12":
         readOverdueShares()
-    elif input=="R13":
+    elif user_input=="R13":
         readUnpaidDividends()
-    elif input=="R14":
+    elif user_input=="R14":
         readAggTotalDiv()
-    elif input=="U1":
+    elif user_input=="U1":
         issuer_id = input("Issuer ID: ")
         due_year = input("Due year (YYYY): ")
         due_month = input("Due month (MM): ")
         due_day = input("Due day (DD): ")
         updateSharesDueDate(issuer_id, due_year, due_month, due_day)
-    elif input=="U2":
+    elif user_input=="U2":
         due_year = input("Due year (YYYY): ")
         due_month = input("Due month (MM): ")
         due_day = input("Due day (DD): ")
         updateSharesOverdue()
-    elif input=="U3":
+    elif user_input=="U3":
         account_number = input("Account Number: ")
         issuer_id = input("Issuer ID: ")
         count = input("Shares Count: ")
         updateSharesCount(account_number, issuer_id, count)
-    elif input=="A1":
+    elif user_input=="A1":
         account_number = input("Account Number: ")
         aggregateTotalDividends(account_number)
-    elif input=="A2":
+    elif user_input=="A2":
         account_number = input("Account Number: ")
         aggregateDividendsByTime(account_number)
-    elif input=="A3":
+    elif user_input=="A3":
         account_number = input("Account Number: ")
         aggregateSharesByCustomerDesc(account_number)
-    elif input=="A4":
+    elif user_input=="A4":
         account_number = input("Account Number: ")
         aggregateSharesByCustomerAsc(account_number)
-    elif input=="A5":
+    elif user_input=="A5":
         aggregateSharesByCity()
-    elif input=="A6":
+    elif user_input=="A6":
         aggregateTotalBalanceByCurrency()
-    elif input=="D1":
+    elif user_input=="D1":
         deleteCustomer()
-    elif input=="D2":
+    elif user_input=="D2":
         deleteAccount()
-    elif input=="D3":
+    elif user_input=="D3":
         deleteIssuer()
-    elif input=="D4":
+    elif user_input=="D4":
         deleteShares()
-    elif input=="D5":
+    elif user_input=="D5":
         deleteTransaction()
-    elif input=="D6":
+    elif user_input=="D6":
         deleteEmptyShares()
     else:
-        print("Incorrect Input")
-    print(info)
+        print("Incorrect User Input")
+    user_input = input("Which method do you want to execute? ")
