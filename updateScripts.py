@@ -3,32 +3,6 @@ from readScripts import *
 
 # UPDATE (FOR REVIEW)
 
-# Updating due date for shares of a certain issuer.
-def updateSharesDueDate():
-    conn = openConnection()
-
-    # because not all shares earn dividends ? (!)
-
-    db = conn['Bank112']
-    collection = db['shares']
-
-    pipeline = [
-        {
-            '$match': {
-                'issuer_id': "8"
-            }
-        }, {
-            '$set': {
-                'due_date': (2024, 11, 30)
-            }
-        }, {
-            '$out': 'shares'
-        }
-    ]
-
-    results = collection.aggregate(pipeline)
-    closeConnection(conn)
-
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
 def updateSharesOverdue():
