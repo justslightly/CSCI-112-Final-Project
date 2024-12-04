@@ -433,8 +433,8 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
     print(f"Account Type: {result['account_type']}")
     print(f"Balance: {result['balance']}")
     print(f"Date Created: {result['date_created']}")
-    print(f'Address: {result['address']}')
-    print(f'Client Account: {result['clientAcc']}')
+    print(f"Address: {result['address']}")
+    print(f"Client Account: {result['clientAcc']}")
     closeConnection(conn)
     
 def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
