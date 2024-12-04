@@ -257,7 +257,7 @@ def aggregateTotalBalanceByCurrency():
 
     results = collection.aggregate(pipeline)
 
-
+# CONVERT TO UPDATE
 # Updating due date for shares of a certain issuer.
 def setDueDate():
     conn = openConnection()
