@@ -92,13 +92,13 @@ def readShares(account_number, issuer_id):
     db = conn['Bank112']
     collection = db['shares']  
     if account_number == "": 
-        result = collection.find(
+        result = collection.find_one(
             {
                 'issuer_id': issuer_id
             }
         )
     else: 
-        result = collection.find(
+        result = collection.find_one(
             {
                 'account_number': account_number,
                 'issuer_id': issuer_id
