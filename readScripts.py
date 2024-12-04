@@ -338,25 +338,23 @@ def aggregateDividendsByTime(account_number):
     pipeline = [
         {
             '$match': {
-                'dividend': True,
+                'dividend': 1, 
                 'account_to': account_number
             }
         }, {
             '$group': {
-                '_id': '$share_id', 
-                'date': '$transaction_date',
+                '_id': '$transaction_date', 
                 'total': {
                     '$sum': '$amount'
                 }
             }
         }, {
             '$sort': {
-                'date': -1
+                '_id': -1
             }
         }, {
             '$project': {
-                '_id': 0,
-                'date': 1,
+                '_id': 1, 
                 'total': 1
             }
         }, {
