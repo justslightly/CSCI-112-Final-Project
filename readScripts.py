@@ -562,49 +562,4 @@ def aggregateTotalBalanceByCurrency():
     closeConnection(conn)
 
 
-# Marking shares that are past due dates in dividends. Unmarking those that are not.
-def markOverdue():
-    conn = openConnection()
-    db = conn['Bank112']
-    collection = db['shares']
-    pipeline = [
-    	# set overdue to overdue ones
-        {
-            '$match': {
-                'due_date': {'$exists': True, '$lt': (2024, 12, 7)}
-            }
-        }, {
-            '$set': {
-                'status': 'overdue'
-            }
-        }, 
-            # set status 'today' to dividends due today
-        {	
-            '$match': {
-                'due_date': {'$exists': True, '$eq': (2024, 12, 7)}
-            }
-        }, {
-            '$set': {
-                'status': 'today'            
-            }
-        }, 
-            # remove status for dividends not urgent
-        {	
-            '$match': {
-                'due_date': {'$exists': True, '$gt': (2024, 12, 7)}
-            }
-        }, {
-            '$unset': {
-                'status': ""
-            }
-        }, 
-            {
-            '$out': 'shares'
-        }
-    ]
-    results = collection.aggregate(pipeline)
-    
-    for result in results:
-        print(result)
 
-    closeConnection(conn)

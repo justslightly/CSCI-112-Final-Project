@@ -51,6 +51,10 @@ def updateSharesOverdue():
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+            print(result)
+            
     closeConnection(conn)
 
 # Update shares for a given issuer and client
