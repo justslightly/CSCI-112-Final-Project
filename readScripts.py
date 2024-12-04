@@ -94,17 +94,17 @@ def readShares(account_number, issuer_id):
     if account_number == "": 
         result = collection.find_one(
             {
-                'issuer_id': issuer_id
+                'issuer_id': int(issuer_id)
             }
         )
     else: 
         result = collection.find_one(
             {
                 'account_number': account_number,
-                'issuer_id': issuer_id
+                'issuer_id': int(issuer_id)
             }
         )
-    return [i for i in result][0]
+    return result
 
 # TESTED: Retrieve all customers
 def readCustomers():

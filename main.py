@@ -105,11 +105,22 @@ while user_input!="X":
         readCustomer(customer_id)
     elif user_input=="R3":
         issuer_id = input("Issuer ID: ")
-        readIssuer(issuer_id)
+        result = readIssuer(issuer_id)
+        print(f'Issuer ID: { result['issuer_id'] }')
+        print(f'Name: { result['name'] }')
+        print(f'Total Shares { result['total_shares'] }')
+        print(f'Shares Sold: { result['sold_shares'] }')
+        print(f'Cost per Share: { result['cost_per_share'] }')
     elif user_input=="R4":
         account_number = input("Account Number: ")
         issuer_id = input("Issuer ID: ")
-        readShares(account_number, issuer_id)
+        result = readShares(account_number, issuer_id)
+        print(f'Account Number: { result['account_number'] }')
+        print(f'Issuer ID: { result['issuer_id'] }')
+        print(f'Share ID { result['share_id'] }')
+        print(f'Total Owned: { result['total_owned'] }')
+        print(f'Due Date: { result['due_date'] }')
+        print(f'Status: { result['status'] }')
     elif user_input=="R5":
         readCustomers()
     elif user_input=="R6":
