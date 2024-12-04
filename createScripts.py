@@ -392,7 +392,7 @@ def oneCustomer(NameFirst, NameLast, City, BirthYear, BirthMonth, BirthDay):
     'last_name': NameLast,
     'date_opened': datetime.now(),
     'address': City,
-    'birthdate': datetime(BirthYear,BirthMonth, BirthDay)
+    'birthdate': datetime(int(BirthYear),int(BirthMonth), int(BirthDay))
     }
 
     collection.insert_one(finalDoc)
