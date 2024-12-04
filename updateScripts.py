@@ -93,20 +93,12 @@ def updateSharesDueDate(issuer_id, due_year, due_month, due_day):
     
     results = collection.update_many(
         {
-            '$match': {
-                'issuer_id': issuer_id
-            }
+            'issuer_id': int(issuer_id)
         }, {
             '$set': {
-                'due_date': (int(due_year), int(due_month), int(due_day))
+                'due_date': datetime(int(due_year), int(due_month), int(due_day))
             }
-        }, {
-            '$out': 'shares'
         }
     )
-    
-    for result in results:
-            print(result)
-
     closeConnection(conn)
 
