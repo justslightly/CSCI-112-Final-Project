@@ -5,55 +5,30 @@ from readScripts import *
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
 def updateSharesOverdue(due_year, due_month, due_day):
+    print("Updated Shares")
     conn = openConnection()
 
     db = conn['Bank112']
     collection = db['shares']
 
-    pipeline = [
-    	# set overdue to overdue ones
+    overdue = collection.update_many(
         {
-            '$match': {
-                'due_date': {'$exists': True, '$lt': (int(due_year), int(due_month), int(due_day))}
-            }
-        }, {
+            'due_date': {'$exists': True, '$lt': datetime(int(due_year), int(due_month), int(due_day))}
+        },{
             '$set': {
                 'status': 'overdue'
             }
-        }, 
-
-        # set status 'today' to dividends due today
-        {	
-            '$match': {
-                'due_date': {'$exists': True, '$eq': (int(due_year), int(due_month), int(due_day))}
-            }
-        }, {
-            '$set': {
-                'status': 'today'            
-            }
-        }, 
-
-        # remove status for dividends not urgent
-        {	
-            '$match': {
-                'due_date': {'$exists': True, '$gt': (int(due_year), int(due_month), int(due_day))}
-            }
-        }, {
-            '$unset': {
-                'status': ""
-            }
-        }, 
-
-        {
-            '$out': 'shares'
         }
-    ]
-
-    results = collection.aggregate(pipeline)
-    
-    for result in results:
-            print(result)
-            
+    )
+    unpaid = collection.update_many(
+        {
+            'due_date': {'$exists': True, '$gt': datetime(int(due_year), int(due_month), int(due_day))}
+        },{
+            '$set': {
+                'status': 'unpaid'
+            }
+        }
+    )            
     closeConnection(conn)
 
 # Update shares for a given issuer and client

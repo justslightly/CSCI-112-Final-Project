@@ -262,7 +262,7 @@ def readUnpaidDividends():
     conn = openConnection()
     db = conn['Bank112']
     collection = db['shares']
-    results = collection.find({ 'status': 'Unpaid' })
+    results = collection.find({ 'status': 'unpaid' })
     for result in results:
         print(f"Account Number: {result['account_number']}")
         print(f"Issuer ID: {result['issuer_id']}")
