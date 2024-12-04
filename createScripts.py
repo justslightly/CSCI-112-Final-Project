@@ -398,12 +398,13 @@ def oneCustomer(NameFirst, NameLast, City, BirthYear, BirthMonth, BirthDay):
     collection.insert_one(finalDoc)
 
     result = collection.find_one({'customer_id':newID})
+
     print(f"Customer ID: {result['customer_id']}")
     print(f"First Name: {result['first_name']}")
     print(f"Last Name: {result['last_name']}")
     print(f"Date Opened: {result['date_opened']}")
     print(f"Address: {result['address']}")
-    print(f'Birthdate: {result['birthdate']}')
+    print(f"Birthdate: {result['birthdate']}")
 
     closeConnection(conn)
 
