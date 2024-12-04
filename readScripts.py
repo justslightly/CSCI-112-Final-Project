@@ -33,13 +33,11 @@ def readAccount(account_no):
         balance = result['balance']
         date_created = result['date_created']
         address = result['address']
-        currency =  result['currency']
         print(f'Customer ID: { customer_id }')
         print(f'Account No: { account_number }')
         print(f'Account Type: { account_type }')
         print(f'Date Created: { date_created }')
         print(f'Address: { address }')
-        print(f'Currency: { currency }')
         print(f'Balance: { balance }')
         if result['clientAcc'] == 1:
             orders = result['orders']
@@ -132,7 +130,6 @@ def readClientAccs():
         balance = result['balance']
         date_created = result['date_created']
         address = result['address']
-        currency =  result['currency']
         orders = result['orders']
         selling = result['selling']
         print(f'Customer ID: { customer_id }')
@@ -140,7 +137,6 @@ def readClientAccs():
         print(f'Account Type: { account_type }')
         print(f'Date Created: { date_created }')
         print(f'Address: { address }')
-        print(f'Currency: { currency }')
         print(f'Balance: { balance }')
         if result['clientAcc'] == 1:
             orders = result['orders']
@@ -165,13 +161,11 @@ def readCustomerAccs(customer_id):
         balance = result['balance']
         date_created = result['date_created']
         address = result['address']
-        currency =  result['currency']
         print(f'Customer ID: { customer_id }')
         print(f'Account No: { account_number }')
         print(f'Account Type: { account_type }')
         print(f'Date Created: { date_created }')
         print(f'Address: { address }')
-        print(f'Currency: { currency }')
         print(f'Balance: { balance }')
 
         if result['clientAcc'] == 1:
