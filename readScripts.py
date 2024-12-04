@@ -490,35 +490,3 @@ def aggregateSharesByCity():
         print(result)
 
     closeConnection(conn)
-
-
-# Get total balance accross accounts by currency
-def aggregateTotalBalanceByCurrency():
-    conn = openConnection()
-
-    db = conn['Bank112']
-    collection = db['account']
-
-    pipeline = [
-        {
-            '$group': {
-                '_id': '$currency',
-                'total_balance': { '$sum': '$balance' }
-            }
-        },
-        {
-            '$sort': { 'total_balance': -1 }
-        }, {
-            '$out': 'totalBalanceByCurrency'
-        }
-    ]
-
-    results = collection.aggregate(pipeline)
-    
-    for result in results:
-        print(result)
-
-    closeConnection(conn)
-
-
-
