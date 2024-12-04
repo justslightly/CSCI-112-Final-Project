@@ -1,3 +1,8 @@
+from pymongo import *
+from datetime import *
+from utils import *
+import random as r
+
 # AGGREGATION PIPELINES
 
 # TESTED Get total dividends history of a client & total per issuer. Sorted from most to least.
@@ -36,8 +41,14 @@ def aggregateTotalDividends(account_number):
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
 
 def displayAggTotalDiv():
+    conn = openConnection()
     db = conn['Bank112']
     collection_totalDividends = db['totalDividends']
 
@@ -49,6 +60,9 @@ def displayAggTotalDiv():
         total = result['total']
         print(f'Issuer ID: { Issuer_ID }')
         print(f'Total: { total }')
+        
+
+    closeConnection(conn)
 
 # aggregateTotalDividends("1-05072021-1")
 # displayAggTotalDiv()
@@ -90,6 +104,11 @@ def aggregateTotalDividendsAsc():
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
 
 
 # Get total dividends history of a client & total per time period. Sorted from most recent to latest. (FOR CHECKING)
@@ -129,6 +148,11 @@ def aggregateDividendsByTime():
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
 
 
 # Get shares owned by a customer. Sort by most to least shares.
@@ -165,6 +189,11 @@ def aggregateSharesByCustomerDesc():
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
 
 
 # Get shares owned by a customer. Sort by least to most shares.
@@ -201,6 +230,11 @@ def aggregateSharesByCustomerAsc():
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
 
 
 # Get shares owned by all customers. Grouped by city - not sure if correct ?
@@ -234,6 +268,11 @@ def aggregateSharesByCity():
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
 
 
 # Get total balance accross accounts by currency
@@ -256,6 +295,11 @@ def aggregateTotalBalanceByCurrency():
     ]
 
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
 
 # CONVERT TO UPDATE
 # Updating due date for shares of a certain issuer.
@@ -282,7 +326,7 @@ def setDueDate():
     for result in results:
             print(result)
 
-        closeConnection(conn)
+    closeConnection(conn)
 
 # Marking shares that are past due dates in dividends. Unmarking those that are not.
 def markOverdue():
@@ -325,3 +369,8 @@ def markOverdue():
         }
     ]
     results = collection.aggregate(pipeline)
+    
+    for result in results:
+        print(result)
+
+    closeConnection(conn)
