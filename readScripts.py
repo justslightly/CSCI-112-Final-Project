@@ -310,7 +310,8 @@ def aggregateTotalDividends(account_number):
             '$project': {
                 '_id': 0,
                 'Issuer_ID': '$_id',
-                'total': 1
+                'total': 1,
+                'account_to': account_number
             }
         }, {
             '$out': 'totalDividends'
@@ -337,25 +338,23 @@ def aggregateDividendsByTime(account_number):
     pipeline = [
         {
             '$match': {
-                'dividend': True,
+                'dividend': 1, 
                 'account_to': account_number
             }
         }, {
             '$group': {
-                '_id': '$share_id', 
-                'date': '$transaction_date',
+                '_id': '$transaction_date', 
                 'total': {
                     '$sum': '$amount'
                 }
             }
         }, {
             '$sort': {
-                'date': -1
+                '_id': -1
             }
         }, {
             '$project': {
-                '_id': 0,
-                'date': 1,
+                '_id': 1, 
                 'total': 1
             }
         }, {
@@ -396,7 +395,7 @@ def aggregateSharesByCustomerDesc(account_number):
             }
         }, {
             '$project': {
-                '_id': 1,
+                '_id': 1, 
                 'total': 1
             }
         }, {
@@ -437,7 +436,7 @@ def aggregateSharesByCustomerAsc(account_number):
             }
         }, {
             '$project': {
-                '_id': 1,
+                '_id': 1, 
                 'total': 1
             }
         }, {
@@ -464,7 +463,7 @@ def aggregateSharesByCity():
         {
             '$lookup': {
                 'from': 'customer',
-                'localField': 'customer_id',
+                'localField': 'issuer_id',
                 'foreignField': '_id',
                 'as': 'customer_data'
             }
@@ -480,6 +479,8 @@ def aggregateSharesByCity():
         },
         {
             '$sort': { 'total_shares': -1 }
+        }, {
+            '$out': 'sharesByCity'
         }
     ]
 
@@ -507,6 +508,8 @@ def aggregateTotalBalanceByCurrency():
         },
         {
             '$sort': { 'total_balance': -1 }
+        }, {
+            '$out': 'totalBalanceByCurrency'
         }
     ]
 
