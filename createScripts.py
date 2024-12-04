@@ -437,8 +437,6 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
     print(f"Address: {result['address']}")
     print(f"Client Account: {result['clientAcc']}")
     closeConnection(conn)
-
-oneAccount(1001)
     
 def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
     conn = openConnection()
