@@ -465,7 +465,7 @@ def aggregateSharesByCity():
         {
             '$lookup': {
                 'from': 'customer',
-                'localField': 'customer_id',
+                'localField': 'issuer_id',
                 'foreignField': '_id',
                 'as': 'customer_data'
             }
