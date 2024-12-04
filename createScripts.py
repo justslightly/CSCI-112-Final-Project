@@ -414,7 +414,7 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
     collection = db['customer']
     acct_collection = db['account']
 
-    custID = collection.find_one({"customer_id":customerID})["customer_id"]
+    custID = collection.find_one({"customer_id":customerID})
 
     final_doc = {
         "customer_id": customerID,
@@ -437,7 +437,7 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
     print(f"Address: {result['address']}")
     print(f"Client Account: {result['clientAcc']}")
     closeConnection(conn)
-    
+
 def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
     conn = openConnection()
     db = conn['Bank112'] 

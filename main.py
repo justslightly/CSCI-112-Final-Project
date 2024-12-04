@@ -77,7 +77,7 @@ while user_input!="E":
             Address = input("Address: ")
             if Address in cities_countries:
                 break
-        oneAccount(customerID, AcctType, clientAcct, Balance, Address)
+        oneAccount(int(customerID), AcctType, clientAcct, Balance, Address)
     elif user_input=="C11":
         customerID = input("Customer ID: ")
         issuerID = input("Issuer ID: ")
