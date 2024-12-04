@@ -179,14 +179,13 @@ def readCustomerAccs(customer_id):
     closeConnection(conn)
 
 # TESTED: Get all dividends paid within October 2024
-# ADD DIVIDEND:TRUE in find
 def readDividendHistory(account_number, start_year, start_month, start_day, end_year, end_month, end_day):
     conn = openConnection()
     db = conn['Bank112']
     collection = db['transaction']
     results = collection.find(
         {   'account_to': account_number,
-            # 'dividend': 1,
+            'dividend': 1,
             'transaction_date': {
                 '$gte': datetime(int(start_year), int(start_month), int(start_day)), 
                 '$lte': datetime(int(end_year), int(end_month), int(end_day))
@@ -208,41 +207,58 @@ def readDividendHistory(account_number, start_year, start_month, start_day, end_
         print(f'Reference No.: { reference_number }')
     closeConnection(conn)
 
-# Get accounts more than a year ago 
-# accoutn 648-18092017-1 appears twice so it's good for demo
-# readDividendHistory("648-18092017-1", 2024, 10, 1, 2024, 10, 31)
-# Read inactive accounts (more than a year)
-# ADD PRINT
-def readInactiveAcc():
-    conn = openConnection()
-    db = conn['Bank112']
-    collection = db['account']
-    one_year_ago = datetime.now() - timedelta(days=365)
-    results = collection.find({ 'last_activity_date': { '$lt': one_year_ago } })
-    for result in results:
-        print(result)
-    closeConnection(conn)
-
 # Get accounts exceeding threshold
-# ADD PRINT
 def readExceedingAcc(threshold):
     conn = openConnection()
     db = conn['Bank112']
     collection = db['account']
-    results = collection.find({ 'balance': { '$gt': threshold } }) # can modify 
+    results = collection.find({ 'balance': { '$gt': int(threshold) } }) 
     for result in results:
-        print(result)
+        print(' ')
+        customer_id = result['customer_id']
+        account_number = result['account_number']
+        account_type = result['account_type']
+        balance = result['balance']
+        date_created = result['date_created']
+        address = result['address']
+        print(f'Customer ID: { customer_id }')
+        print(f'Account No: { account_number }')
+        print(f'Account Type: { account_type }')
+        print(f'Date Created: { date_created }')
+        print(f'Address: { address }')
+        print(f'Balance: { balance }')
+        if result['clientAcc'] == 1:
+            orders = result['orders']
+            selling = result['selling']
+            print(f'Orders: { orders }')
+            print(f'Selling: { selling }')
     closeConnection(conn)
 
 # Get accounts sorted by balance
-# ADD PRINT
 def readAccBalance():
     conn = openConnection()
     db = conn['Bank112']
     collection = db['account']
     results = collection.find().sort('balance', -1)
     for result in results:
-        print(result)
+        print(' ')
+        customer_id = result['customer_id']
+        account_number = result['account_number']
+        account_type = result['account_type']
+        balance = result['balance']
+        date_created = result['date_created']
+        address = result['address']
+        print(f'Customer ID: { customer_id }')
+        print(f'Account No: { account_number }')
+        print(f'Account Type: { account_type }')
+        print(f'Date Created: { date_created }')
+        print(f'Address: { address }')
+        print(f'Balance: { balance }')
+        if result['clientAcc'] == 1:
+            orders = result['orders']
+            selling = result['selling']
+            print(f'Orders: { orders }')
+            print(f'Selling: { selling }')
     closeConnection(conn)
 
 # Get overdue shares
@@ -266,20 +282,6 @@ def readUnpaidDividends():
     for result in results:
         print(result)
     closeConnection(conn)
-
-def readAggTotalDiv():
-    conn = openConnection()
-    db = conn['Bank112']
-    collection_totalDividends = db['totalDividends']
-    results_tD = collection_totalDividends.find()
-    for result in results_tD:
-        print(' ')
-        Issuer_ID = result['Issuer_ID']
-        total = result['total']
-        print(f'Issuer ID: { Issuer_ID }')
-        print(f'Total: { total }')
-    closeConnection(conn)
-
 
 # AGGREGATION PIPELINES
 
