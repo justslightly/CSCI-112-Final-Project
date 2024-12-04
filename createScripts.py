@@ -404,7 +404,7 @@ def oneCustomer(NameFirst, NameLast, City, BirthYear, BirthMonth, BirthDay):
     print(f"Date Opened: {result['date_opened']}")
     print(f"Address: {result['address']}")
     print(f'Birthdate: {result['birthdate']}')
-    
+
     closeConnection(conn)
 
 def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
@@ -425,6 +425,15 @@ def oneAccount(customerID, AcctType, clientAcct, Balance,Address):
         }
 
     collection.insert_one(final_doc)
+
+    result = collection.find_one({'customer_id':customerID})
+    print(f"Customer ID: {result['customer_id']}")
+    print(f"Account Number: {result['account_number']}")
+    print(f"Account Type: {result['account_type']}")
+    print(f"Balance: {result['balance']}")
+    print(f"Date Created: {result['date_created']}")
+    print(f'Address: {result['address']}')
+    print(f'Client Account: {result['clientAcc']}')
     closeConnection(conn)
     
 def oneOrder(customerID,issuerID,numShares, AcctNumber, DueDate):
