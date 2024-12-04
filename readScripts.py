@@ -395,7 +395,7 @@ def aggregateSharesByCustomerDesc(account_number):
             }
         }, {
             '$project': {
-                '_id': 1,
+                '_id': 1, 
                 'total': 1
             }
         }, {
@@ -436,7 +436,7 @@ def aggregateSharesByCustomerAsc(account_number):
             }
         }, {
             '$project': {
-                '_id': 1,
+                '_id': 1, 
                 'total': 1
             }
         }, {
