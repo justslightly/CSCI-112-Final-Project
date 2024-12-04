@@ -393,7 +393,7 @@ def aggregateSharesByCustomerDesc(account_number):
             }
         }, {
             '$match': {
-                'account_number': 'account_number'
+                'account_number': account_number
             }
         }, {
             '$unwind': '$issuer_data'
@@ -443,7 +443,7 @@ def aggregateSharesByCustomerAsc(account_number):
             }
         }, {
             '$match': {
-                'account_number': 'account_number'
+                'account_number': account_number
             }
         }, {
             '$unwind': '$issuer_data'
